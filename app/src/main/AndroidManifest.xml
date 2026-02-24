@@ -14,9 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Coffeeshoponline">
         <activity
-            android:name=".ui.login.LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login" />
+            android:name=".activity.LoginActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.WishListActivity"
             android:exported="false" />
