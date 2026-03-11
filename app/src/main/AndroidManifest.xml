@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Coffeeshoponline">
         <activity
+            android:name=".activity.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity

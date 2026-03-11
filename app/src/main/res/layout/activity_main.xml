@@ -17,7 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="90dp">
+            android:paddingBottom="90dp"
+            android:focusableInTouchMode="true"
+            android:descendantFocusability="afterDescendants">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -189,13 +191,14 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewPopular"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintVertical_bias="1.0"
+                    android:nestedScrollingEnabled="false"/>
 
                 <ProgressBar
                     android:id="@+id/progressBarPopular"
@@ -241,13 +244,14 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewMoreCoffee"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintVertical_bias="1.0"
+                    android:nestedScrollingEnabled="false"/>
 
                 <ProgressBar
                     android:id="@+id/progressBarMoreCoffee"
@@ -256,10 +260,10 @@
                     android:layout_height="wrap_content"
                     android:indeterminateTint="@color/orange"
                     android:indeterminateTintMode="src_in"
-                    app:layout_constraintBottom_toBottomOf="@+id/recyclerViewPopular"
+                    app:layout_constraintBottom_toBottomOf="@+id/recyclerViewMoreCoffee"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/recyclerViewPopular" />
+                    app:layout_constraintTop_toTopOf="@+id/recyclerViewMoreCoffee" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

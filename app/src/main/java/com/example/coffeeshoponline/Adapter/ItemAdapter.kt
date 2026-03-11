@@ -11,7 +11,7 @@ import com.example.coffeeshoponline.databinding.ViewholderPopularBinding
 import com.example.coffeeshoponline.model.ItemModel
 
 class ItemAdapter(
-    private val items: MutableList<ItemModel>
+    val items: MutableList<ItemModel>
 ) : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
 
     private lateinit var context: Context

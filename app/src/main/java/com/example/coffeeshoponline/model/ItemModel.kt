@@ -13,7 +13,7 @@ data class ItemModel(
     val priceLarge: Double = 0.0,
     val rating: Double = 0.0,
     val categoryId: Any? = 0,
-    val isPopular: Int = 0,
+    val isPopular: Long = 0L,
     var selectedSize: String = "SMALL",
     var numberInCart: Int = 1,
     var isFavorite: Boolean = false

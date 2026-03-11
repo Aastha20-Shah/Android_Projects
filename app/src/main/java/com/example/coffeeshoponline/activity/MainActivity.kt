@@ -3,6 +3,8 @@ package com.example.coffeeshoponline.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +16,7 @@ import com.example.coffeeshoponline.model.BannerModel
 import com.example.coffeeshoponline.model.CategoryModel
 import com.example.coffeeshoponline.model.ItemModel
 import com.google.firebase.database.*
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -21,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var popularAdapter: ItemAdapter
     private lateinit var moreAdapter: ItemAdapter
+
+    private var allItemsList = mutableListOf<ItemModel>()
 
     private var isPopularExpanded = false
     private var isMoreExpanded = false
@@ -32,11 +37,27 @@ class MainActivity : AppCompatActivity() {
         database = FirebaseDatabase
             .getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/")
             .reference
+        popularAdapter = ItemAdapter(mutableListOf())
+        moreAdapter = ItemAdapter(mutableListOf())
 
+        // 🔥 FIX 2: Set adapters IMMEDIATELY (prevents "No adapter attached")
+        binding.recyclerViewPopular.apply {
+            layoutManager = GridLayoutManager(this@MainActivity, 2)
+            adapter = popularAdapter
+            isNestedScrollingEnabled = false
+        }
+        binding.recyclerViewMoreCoffee.apply {
+            layoutManager = GridLayoutManager(this@MainActivity, 2)
+            adapter = moreAdapter
+            isNestedScrollingEnabled = false
+        }
+        setupRecyclerViews()
+        setupSearch()
         loadBanner()
         loadCategories()
         loadPopularItems()
         loadMoreCoffee()
+
         binding.seeAllPopular.setOnClickListener {
             isPopularExpanded = true
             loadPopularItems()
@@ -47,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             loadMoreCoffee()
         }
 
+        binding.nestedScrollView.isSmoothScrollingEnabled = true
         binding.cartBtn.setOnClickListener {
             startActivity(Intent(this, CartActivity::class.java))
         }
@@ -55,7 +77,66 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, WishListActivity::class.java))
         }
     }
+    private fun setupRecyclerViews() {
+        popularAdapter = ItemAdapter(mutableListOf())
+        moreAdapter = ItemAdapter(mutableListOf())
 
+        binding.recyclerViewPopular.apply {
+            layoutManager = GridLayoutManager(this@MainActivity, 2)
+            adapter = popularAdapter
+            isNestedScrollingEnabled = false
+        }
+        binding.recyclerViewMoreCoffee.apply {
+            layoutManager = GridLayoutManager(this@MainActivity, 2)
+            adapter = moreAdapter
+            isNestedScrollingEnabled = false
+        }
+    }
+
+    // ---------------- SEARCH LOGIC ----------------
+    private fun setupSearch() {
+        binding.editTextText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString().lowercase(Locale.ROOT)
+                filterItems(query)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun filterItems(query: String) {
+        if (query.isEmpty()) {
+            // Show everything again if search is empty
+            binding.banner.visibility = View.VISIBLE
+            binding.textView3.visibility = View.VISIBLE
+            binding.categoryView.visibility = View.VISIBLE
+            binding.recyclerViewPopular.visibility = View.VISIBLE
+            // Reset "More Coffee" title
+            binding.seeAllMore.parent.let { (it as View).visibility = View.VISIBLE }
+
+            loadMoreCoffee() // Restore original list
+        } else {
+            // Hide other sections to show search results clearly
+            binding.banner.visibility = View.GONE
+            binding.textView3.visibility = View.GONE
+            binding.categoryView.visibility = View.GONE
+            binding.recyclerViewPopular.visibility = View.GONE
+
+            val filteredList = allItemsList.filter {
+                it.title?.lowercase(Locale.ROOT)?.contains(query) == true ||
+                        it.description?.lowercase(Locale.ROOT)?.contains(query) == true
+            }
+
+            moreAdapter.apply {
+                items.clear()
+                items.addAll(filteredList)
+                notifyDataSetChanged()
+            }
+        }
+    }
     // ---------------- BANNER ----------------
     private fun loadBanner() {
         binding.progressBarBanner.visibility = View.VISIBLE
@@ -121,24 +202,35 @@ class MainActivity : AppCompatActivity() {
         binding.progressBarPopular.visibility = View.VISIBLE
 
         database.child("items")
+            .orderByChild("isPopular")
+            .equalTo(1.0) // 🔥 MUST BE DOUBLE
             .addListenerForSingleValueEvent(object : ValueEventListener {
+
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val list = mutableListOf<ItemModel>()
 
                     for (child in snapshot.children) {
                         val item = child.getValue(ItemModel::class.java)
-                        if (item?.isPopular == 1) {
+                        if (item != null) {
                             list.add(item)
                         }
                     }
 
-                    val displayList = if (isPopularExpanded) list else list.take(4)
+                    val displayList =
+                        if (isPopularExpanded) list else list.take(6)
 
-                    binding.recyclerViewPopular.layoutManager =
-                        GridLayoutManager(this@MainActivity, 2)
-                    binding.recyclerViewPopular.adapter = ItemAdapter(displayList.toMutableList())
+                    popularAdapter.apply {
+                        items.clear()
+                        items.addAll(displayList)
+                        notifyDataSetChanged()
+                    }
 
                     binding.progressBarPopular.visibility = View.GONE
+
+                    if (isPopularExpanded) {
+                        scrollToPosition(binding.recyclerViewPopular, 6)
+                    }
+
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -147,36 +239,67 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    // ---------------- MORE COFFEE ----------------
     private fun loadMoreCoffee() {
         binding.progressBarMoreCoffee.visibility = View.VISIBLE
 
         database.child("items")
+            .orderByChild("isPopular")
+            .equalTo(0.0) // 🔥 MUST BE DOUBLE
             .addListenerForSingleValueEvent(object : ValueEventListener {
+
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val list = mutableListOf<ItemModel>()
 
                     for (child in snapshot.children) {
                         val item = child.getValue(ItemModel::class.java)
-                        if (item?.isPopular == 0) {
+                        if (item != null) {
                             list.add(item)
                         }
                     }
 
-                    val displayList = if (isMoreExpanded) list else list.take(10)
+                    val displayList =
+                        if (isMoreExpanded) list else list.take(10)
 
-                    binding.recyclerViewMoreCoffee.layoutManager =
-                        GridLayoutManager(this@MainActivity, 2)
-
-                    binding.recyclerViewMoreCoffee.adapter =
-                        ItemAdapter(displayList.toMutableList())
+                    moreAdapter.apply {
+                        items.clear()
+                        items.addAll(displayList)
+                        notifyDataSetChanged()
+                    }
 
                     binding.progressBarMoreCoffee.visibility = View.GONE
+
+                    if (isMoreExpanded) {
+                        scrollToPosition(binding.recyclerViewMoreCoffee, 10)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     binding.progressBarMoreCoffee.visibility = View.GONE
                 }
             })
+    }
+
+    private fun scrollToPosition(
+        recyclerView: androidx.recyclerview.widget.RecyclerView,
+        position: Int
+    ) {
+        binding.nestedScrollView.postDelayed({
+            // 1. Get the view of the specific item
+            val itemView = recyclerView.layoutManager?.findViewByPosition(position)
+
+            if (itemView != null) {
+                val rect = android.graphics.Rect()
+                itemView.getDrawingRect(rect)
+
+                // 2. Calculate coordinates relative to the NestedScrollView
+                binding.nestedScrollView.offsetDescendantRectToMyCoords(itemView, rect)
+
+                // 3. Smooth scroll so that specific item is at the top of the screen
+                binding.nestedScrollView.smoothScrollTo(0, rect.top)
+            } else {
+                // Fallback: If view isn't ready, scroll to the bottom of the RecyclerView's current visible area
+                binding.nestedScrollView.smoothScrollTo(0, recyclerView.bottom)
+            }
+        }, 100) // Small delay to ensure RecyclerView has bound the new items
     }
 }
