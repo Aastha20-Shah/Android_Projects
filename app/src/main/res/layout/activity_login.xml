@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:isScrollContainer="true"
     android:background="@color/lightCream">
 
     <LinearLayout
@@ -135,5 +137,4 @@
             android:background="@drawable/light_button_bg" />
 
     </LinearLayout>
-
 </ScrollView>

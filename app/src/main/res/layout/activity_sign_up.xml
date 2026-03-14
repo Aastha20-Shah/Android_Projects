@@ -2,6 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:isScrollContainer="true"
     android:background="@color/lightCream">
 
     <LinearLayout
@@ -56,7 +58,23 @@
                 android:padding="10dp"
                 android:layout_marginTop="6dp"
                 android:inputType="textPersonName"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone Number"
+                android:textStyle="bold"
+                android:textColor="@color/darkBrown"
+                android:textSize="14sp"
+                android:layout_marginTop="14dp"/>
 
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/light_border_bg"
+                android:padding="10dp"
+                android:layout_marginTop="6dp"
+                android:inputType="phone"/>
             <!-- Email -->
             <TextView
                 android:layout_width="wrap_content"
@@ -158,7 +176,9 @@
             android:textAllCaps="false"
             android:textColor="@color/darkBrown"
             android:background="@drawable/light_button_bg"/>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
     </LinearLayout>
 
 </ScrollView>

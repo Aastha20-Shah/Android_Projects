@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lightCream"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/white_full_corner_bg"
+        android:padding="20dp">
+
+        <!-- CLOSE BUTTON -->
+        <ImageView
+            android:id="@+id/closeBtn"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:src="@drawable/close"/>
+
+        <!-- TITLE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Delivery Address"
+            android:textColor="@color/darkBrown"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- HOUSE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HOUSE / FLAT / BLOCK"
+            android:textColor="@color/brown"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etHouse"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:hint="A-1 Block A"/>
+
+        <!-- AREA -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="APARTMENT / ROAD / AREA"
+            android:textColor="@color/brown"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etArea"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:hint="Sector 41"/>
+
+        <!-- LANDMARK -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="LANDMARK (optional)"
+            android:textColor="@color/brown"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etLandmark"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:hint="Near gate no.2"/>
+
+        <!-- CITY -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CITY"
+            android:textColor="@color/brown"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etCity"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:hint="Vadodara"/>
+
+        <!-- STATE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="STATE"
+            android:textColor="@color/brown"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etState"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:hint="Gujarat"/>
+
+        <!-- PINCODE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PINCODE"
+            android:textColor="@color/brown"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etPincode"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:inputType="number"
+            android:hint="390001"/>
+
+        <!-- COUNTRY -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="COUNTRY"
+            android:textColor="@color/brown"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/etCountry"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:hint="India"/>
+
+        <!-- SAVE BUTTON -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saveAddressBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Save Address"
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/brown_full_corner_bg"/>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -76,6 +76,9 @@ class MainActivity : AppCompatActivity() {
         binding.whishList.setOnClickListener {
             startActivity(Intent(this, WishListActivity::class.java))
         }
+        binding.profileBtn.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
     private fun setupRecyclerViews() {
         popularAdapter = ItemAdapter(mutableListOf())
@@ -210,9 +213,10 @@ class MainActivity : AppCompatActivity() {
                     val list = mutableListOf<ItemModel>()
 
                     for (child in snapshot.children) {
-                        val item = child.getValue(ItemModel::class.java)
-                        if (item != null) {
-                            list.add(item)
+                        child.getValue(ItemModel::class.java)?.let {
+                            list.add(it)
+                            // Add to global list for search if not already there
+                            if (!allItemsList.contains(it)) allItemsList.add(it)
                         }
                     }
 
@@ -251,9 +255,10 @@ class MainActivity : AppCompatActivity() {
                     val list = mutableListOf<ItemModel>()
 
                     for (child in snapshot.children) {
-                        val item = child.getValue(ItemModel::class.java)
-                        if (item != null) {
-                            list.add(item)
+                        child.getValue(ItemModel::class.java)?.let {
+                            list.add(it)
+                            // Add to global list for search if not already there
+                            if (!allItemsList.contains(it)) allItemsList.add(it)
                         }
                     }
 

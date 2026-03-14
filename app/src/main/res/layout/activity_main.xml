@@ -16,10 +16,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="90dp"
+            android:descendantFocusability="afterDescendants"
             android:focusableInTouchMode="true"
-            android:descendantFocusability="afterDescendants">
+            android:orientation="vertical"
+            android:paddingBottom="90dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -192,13 +192,13 @@
                     android:id="@+id/recyclerViewPopular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0"
-                    android:nestedScrollingEnabled="false"/>
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <ProgressBar
                     android:id="@+id/progressBarPopular"
@@ -213,6 +213,7 @@
                     app:layout_constraintTop_toTopOf="@+id/recyclerViewPopular" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -245,13 +246,13 @@
                     android:id="@+id/recyclerViewMoreCoffee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0"
-                    android:nestedScrollingEnabled="false"/>
+                    app:layout_constraintVertical_bias="1.0" />
 
                 <ProgressBar
                     android:id="@+id/progressBarMoreCoffee"
@@ -388,6 +389,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_gravity="center"
+            android:id="@+id/profileBtn"
             app:srcCompat="@drawable/btn_5" />
 
         <TextView
