@@ -14,6 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Coffeeshoponline">
         <activity
+            android:name=".PaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AddressBottomSheet"
             android:exported="false" />
         <activity

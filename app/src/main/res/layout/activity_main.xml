@@ -71,6 +71,7 @@
                     android:background="@drawable/white_full_corner_bg"
                     android:drawableStart="@drawable/search_icon"
                     android:drawablePadding="8dp"
+                    android:textColor="@color/darkBrown"
                     android:ems="10"
                     android:hint="Search anything..."
                     android:inputType="text"
