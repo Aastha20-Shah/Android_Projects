@@ -150,6 +150,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="House / Flat"
+                    android:textColor="@color/darkBrown"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
                 <EditText
@@ -158,6 +159,7 @@
                     android:layout_height="48dp"
                     android:hint="Apartment / Road / Area"
                     android:layout_marginTop="10dp"
+                    android:textColor="@color/darkBrown"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
 
@@ -167,6 +169,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="Landmark"
+                    android:textColor="@color/darkBrown"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
@@ -176,6 +179,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="City"
+                    android:textColor="@color/darkBrown"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
@@ -185,6 +189,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="State"
+                    android:textColor="@color/darkBrown"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
@@ -194,6 +199,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="Pincode"
+                    android:textColor="@color/darkBrown"
                     android:inputType="number"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/light_border_bg"
@@ -204,6 +210,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="Country"
+                    android:textColor="@color/darkBrown"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
@@ -233,6 +240,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:hint="Current Password"
+                    android:textColor="@color/darkBrown"
                     android:inputType="textPassword"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"/>
@@ -243,6 +251,7 @@
                     android:layout_height="48dp"
                     android:hint="New Password"
                     android:inputType="textPassword"
+                    android:textColor="@color/darkBrown"
                     android:background="@drawable/light_border_bg"
                     android:padding="10dp"
                     android:layout_marginTop="10dp"/>
