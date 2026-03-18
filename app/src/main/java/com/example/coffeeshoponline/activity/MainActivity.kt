@@ -8,13 +8,16 @@ import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.coffeeshoponline.Adapter.CategoryAdapter
 import com.example.coffeeshoponline.Adapter.ItemAdapter
 import com.example.coffeeshoponline.databinding.ActivityMainBinding
+import com.example.coffeeshoponline.databinding.DialogAddAddressBinding
 import com.example.coffeeshoponline.model.BannerModel
 import com.example.coffeeshoponline.model.CategoryModel
 import com.example.coffeeshoponline.model.ItemModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.util.Locale
 
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         database = FirebaseDatabase
             .getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/")
             .reference
+        checkUserAddress()
         popularAdapter = ItemAdapter(mutableListOf())
         moreAdapter = ItemAdapter(mutableListOf())
 
@@ -78,6 +82,94 @@ class MainActivity : AppCompatActivity() {
         }
         binding.profileBtn.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
+        }
+
+    }
+    private fun checkUserAddress() {
+
+        val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser ?: return
+        val uid = user.uid
+
+        database.child("users")
+            .child(uid)
+            .child("address")
+            .get()
+            .addOnSuccessListener { snapshot ->
+
+                if (!snapshot.exists()) {
+                    showAddressPopup()
+                }
+            }
+    }
+    private fun showAddressPopup() {
+        // 1. Inflate the dialog layout using its specific binding class
+        val dialogBinding = DialogAddAddressBinding.inflate(layoutInflater)
+
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .setCancelable(false)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        dialog.show()
+
+        dialogBinding.closeBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogBinding.saveAddressBtn.setOnClickListener {
+
+            val house = dialogBinding.etHouse.text.toString().trim()
+            val area = dialogBinding.etArea.text.toString().trim()
+            val landmark = dialogBinding.etLandmark.text.toString().trim()
+            val city = dialogBinding.etCity.text.toString().trim()
+            val state = dialogBinding.etState.text.toString().trim()
+            val pincode = dialogBinding.etPincode.text.toString().trim()
+            val country = dialogBinding.etCountry.text.toString().trim()
+
+            if (house.isEmpty() || city.isEmpty() || pincode.isEmpty()) {
+                Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val user = FirebaseAuth.getInstance().currentUser ?: return@setOnClickListener
+            val uid = user.uid
+
+            val addressMap = HashMap<String, Any>()
+
+            addressMap["house"] = house
+            addressMap["area"] = area
+            addressMap["landmark"] = landmark
+            addressMap["city"] = city
+            addressMap["state"] = state
+            addressMap["pincode"] = pincode
+            addressMap["country"] = country
+
+            FirebaseDatabase.getInstance()
+                .reference
+                .child("users")
+                .child(uid)
+                .child("address")
+                .setValue(addressMap)
+                .addOnSuccessListener {
+
+                    Toast.makeText(
+                        this,
+                        "Address saved successfully!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    dialog.dismiss()
+                }
+                .addOnFailureListener {
+
+                    Toast.makeText(
+                        this,
+                        "Failed to save address",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
         }
     }
     private fun setupRecyclerViews() {
