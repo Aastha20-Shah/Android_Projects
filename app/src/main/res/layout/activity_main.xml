@@ -41,7 +41,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text="Aastha Shah"
+                    android:text="Loading..."
                     android:textColor="@color/darkBrown"
                     android:textStyle="bold" />
 

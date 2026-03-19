@@ -29,11 +29,17 @@ class OrderHistoryActivity : AppCompatActivity() {
     }
 
     private fun initOrderHistory() {
+
+        val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+            // Handle case where user isn't logged in
+            return
+        }
         val database = FirebaseDatabase.getInstance().getReference("orders")
         binding.orderProgressBar.visibility = View.VISIBLE
 
         // Use your specific UserID from the database
-        val query = database.orderByChild("userId").equalTo("UgdlANOAyTbifCTFUgmNJehqOxG3")
+        val query = database.orderByChild("userId").equalTo(user.uid)
 
         query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

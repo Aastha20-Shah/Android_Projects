@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         database = FirebaseDatabase
             .getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/")
             .reference
+        loadUserData()
         checkUserAddress()
         popularAdapter = ItemAdapter(mutableListOf())
         moreAdapter = ItemAdapter(mutableListOf())
@@ -401,5 +402,29 @@ class MainActivity : AppCompatActivity() {
                 binding.nestedScrollView.smoothScrollTo(0, recyclerView.bottom)
             }
         }, 100) // Small delay to ensure RecyclerView has bound the new items
+    }
+    private fun loadUserData() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val uid = user.uid
+
+            // Reference to users -> uid -> name
+            database.child("users").child(uid).child("name")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val name = snapshot.getValue(String::class.java)
+                            binding.textView2.text = name
+                        } else {
+                            // Fallback if name isn't set in DB
+                            binding.textView2.text = "Coffee Lover"
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        binding.textView2.text = "Welcome!"
+                    }
+                })
+        }
     }
 }

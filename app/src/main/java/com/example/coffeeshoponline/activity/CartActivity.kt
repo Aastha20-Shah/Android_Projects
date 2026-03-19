@@ -75,9 +75,9 @@ class CartActivity : AppCompatActivity() {
                         .get()
                         .addOnSuccessListener { snapshot ->
 
-                            val isFirstOrder = snapshot.getValue(Boolean::class.java) ?: false
+                            val isFirstOrder = snapshot.getValue(Boolean::class.java) ?: true
 
-                            if (isFirstOrder==true) {
+                            if (isFirstOrder==false) {
                                 showMessage("FIRST50 coupon is only valid for your first order.")
                                 return@addOnSuccessListener
                             }
