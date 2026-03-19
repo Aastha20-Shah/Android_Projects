@@ -367,7 +367,8 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/btn_4" />
+            app:srcCompat="@drawable/btn_4"
+            android:id="@+id/myOrder"/>
 
         <TextView
 

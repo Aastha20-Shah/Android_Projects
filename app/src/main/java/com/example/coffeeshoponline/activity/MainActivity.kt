@@ -83,6 +83,9 @@ class MainActivity : AppCompatActivity() {
         binding.profileBtn.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
+        binding.myOrder.setOnClickListener {
+            startActivity(Intent(this, OrderHistoryActivity::class.java))
+        }
 
     }
     private fun checkUserAddress() {
