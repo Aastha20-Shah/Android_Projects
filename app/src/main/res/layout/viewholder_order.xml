@@ -71,7 +71,6 @@
                 android:padding="4dp"
                 android:background="@drawable/brown_full_corner_bg"
                 android:backgroundTint="#FDF5E6"
-                app:tint="@color/darkBrown"
                 android:scaleType="centerInside"/>
 
             <LinearLayout

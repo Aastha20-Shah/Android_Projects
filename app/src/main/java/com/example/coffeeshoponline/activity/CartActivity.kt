@@ -229,6 +229,10 @@ class CartActivity : AppCompatActivity() {
         val dialogBinding = DialogAddAddressBinding.inflate(LayoutInflater.from(this))
         val dialog = AlertDialog.Builder(this).setView(dialogBinding.root).create()
 
+        dialogBinding.closeBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
         dialogBinding.saveAddressBtn.text =
             if (isFirstTime) "Save & Order" else "Use for this Order"
 
