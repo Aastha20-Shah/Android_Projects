@@ -31,7 +31,7 @@ class OrderAdapter (private val items: List<OrderModel>) :
         val order = items[position]
 
         holder.binding.apply {
-            // Text Bindings
+
             orderDateTxt.text = order.getFormattedDate()
             orderPriceTxt.text = "₹${order.totalAmount}"
             orderStatusTxt.text = order.status
@@ -42,17 +42,17 @@ class OrderAdapter (private val items: List<OrderModel>) :
             if (coffeeList.isNotEmpty()) {
                 val firstCoffee = coffeeList[0]
 
-                // Set text details
+
                 holder.binding.itemSummaryTxt.text = if (coffeeList.size > 1) "${firstCoffee.title} + ${coffeeList.size - 1} more" else firstCoffee.title
                 holder.binding.sizeQtyTxt.text = "Size: ${firstCoffee.selectedSize} | Total Qty: ${coffeeList.sumOf { it.numberInCart }}"
 
-                // Load the first image from the picUrl list
+
                 if (!firstCoffee.picUrl.isNullOrEmpty()) {
-                    val imageUrl = firstCoffee.picUrl[0] // Get the first string in the list
+                    val imageUrl = firstCoffee.picUrl[0]
 
                     com.bumptech.glide.Glide.with(holder.itemView.context)
                         .load(imageUrl)
-                        .into(holder.binding.pic) // Ensure the ImageView ID in XML is 'pic'
+                        .into(holder.binding.pic)
                 }
             }
 
@@ -61,6 +61,10 @@ class OrderAdapter (private val items: List<OrderModel>) :
                 "Pending" -> {
                     orderStatusTxt.setTextColor(Color.parseColor("#FFA500"))
                     orderStatusTxt.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFF3E0"))
+                }
+                "Success", "Received" -> {
+                    orderStatusTxt.setTextColor(Color.parseColor("#388E3C"))
+                    orderStatusTxt.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E8F5E9"))
                 }
                 "Delivered" -> {
                     orderStatusTxt.setTextColor(Color.parseColor("#4CAF50"))

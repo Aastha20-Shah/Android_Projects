@@ -45,7 +45,7 @@ class PaymentActivity : AppCompatActivity() {
 
             placeOrder(paymentMethod)
         }
-        // Handle single selection manually (NO XML change)
+
 
         binding.gpayOption.setOnClickListener {
             clearAllRadio()

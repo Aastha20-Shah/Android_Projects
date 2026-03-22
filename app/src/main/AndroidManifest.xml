@@ -58,6 +58,27 @@
         <activity
             android:name=".activity.MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".activity.AdminLoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminManageOrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminManageUsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminMenuActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminRevenueActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminCouponsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

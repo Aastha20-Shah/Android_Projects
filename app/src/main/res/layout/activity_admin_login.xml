@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -13,7 +12,6 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- LOGO SPACE -->
         <ImageView
             android:id="@+id/appLogo"
             android:layout_width="120dp"
@@ -24,7 +22,6 @@
             android:scaleType="fitCenter"
             android:contentDescription="App Logo" />
 
-        <!-- LOGIN CONTAINER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,36 +29,32 @@
             android:padding="20dp"
             android:background="@drawable/white_full_corner_bg">
 
-            <!-- Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign In"
+                android:text="Admin Portal"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/darkBrown"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Email Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email"
+                android:text="Admin Username"
                 android:textStyle="bold"
                 android:textColor="@color/darkBrown"
                 android:textSize="14sp" />
 
-            <!-- Email Input -->
             <EditText
-                android:id="@+id/etEmail"
+                android:id="@+id/etAdminUsername"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/light_border_bg"
                 android:padding="10dp"
                 android:layout_marginTop="6dp"
-                android:inputType="textEmailAddress" />
+                android:inputType="text" />
 
-            <!-- Password Label -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,9 +64,8 @@
                 android:textSize="14sp"
                 android:layout_marginTop="14dp" />
 
-            <!-- Password Input -->
             <EditText
-                android:id="@+id/etPassword"
+                android:id="@+id/etAdminPassword"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@drawable/light_border_bg"
@@ -81,80 +73,37 @@
                 android:layout_marginTop="6dp"
                 android:inputType="textPassword" />
 
-            <!-- Forgot Password -->
-            <TextView
-                android:id="@+id/tvForgotPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forgot your password?"
-                android:textColor="@color/brown"
-                android:textSize="13sp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="end" />
-
-            <!-- Login Button -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnLogin"
+                android:id="@+id/btnAdminLogin"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 android:text="Login"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@drawable/brown_full_corner_bg" />
 
-            <!-- Terms -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="By continuing, you agree to our Terms and Privacy Policy."
-                android:textSize="12sp"
-                android:textColor="@color/brown"
-                android:layout_marginTop="14dp" />
-
         </LinearLayout>
-
-        <!-- Divider -->
+        
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="────────  New to The Black Cup?  ────────"
+            android:text="────────  Back to User Area?  ────────"
             android:textAlignment="center"
             android:textSize="12sp"
             android:textColor="@color/brown"
             android:layout_marginTop="24dp" />
 
-        <!-- Create Account Button -->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnCreateAccount"
+            android:id="@+id/btnBackToUserLogin"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
-            android:text="Create your account"
+            android:text="User Login"
             android:textStyle="bold"
             android:textAllCaps="false"
             android:textColor="@color/darkBrown"
             android:background="@drawable/light_button_bg" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="────────  Administrative Access  ────────"
-            android:textAlignment="center"
-            android:textSize="12sp"
-            android:textColor="@color/brown"
-            android:layout_marginTop="24dp" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnLoginAsAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:text="Login as Admin"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:textColor="@color/darkBrown"
-            android:background="@drawable/light_border_bg" />
 
     </LinearLayout>
 </ScrollView>

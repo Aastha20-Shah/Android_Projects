@@ -26,21 +26,21 @@ class WishListActivity : AppCompatActivity() {
             finish()
         }
         binding.progressBar.visibility = View.VISIBLE
-        val wishlistItems = WishlistManager(this).getWishlist()
+        WishlistManager(this).getWishlist { wishlistItems ->
+            binding.progressBar.visibility = View.GONE
 
-        if (wishlistItems.isEmpty()) {
-            binding.emptyLayout.visibility = View.VISIBLE
-            binding.ListView.visibility = View.GONE
-        } else {
-            binding.emptyLayout.visibility = View.GONE
-            binding.ListView.visibility = View.VISIBLE
+            if (wishlistItems.isEmpty()) {
+                binding.emptyLayout.visibility = View.VISIBLE
+                binding.ListView.visibility = View.GONE
+            } else {
+                binding.emptyLayout.visibility = View.GONE
+                binding.ListView.visibility = View.VISIBLE
 
-            adapter = WishlistAdapter(wishlistItems)
-            binding.ListView.layoutManager = GridLayoutManager(this, 2)
-            binding.ListView.adapter = adapter
+                adapter = WishlistAdapter(wishlistItems)
+                binding.ListView.layoutManager = GridLayoutManager(this@WishListActivity, 2)
+                binding.ListView.adapter = adapter
+            }
         }
-
-        binding.progressBar.visibility = View.GONE
     }
 
 }

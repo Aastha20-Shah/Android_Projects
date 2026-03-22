@@ -79,7 +79,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.whishList.setOnClickListener {
-            startActivity(Intent(this, WishListActivity::class.java))
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                startActivity(Intent(this, WishListActivity::class.java))
+            } else {
+                val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+                builder.setTitle("Login Required")
+                builder.setMessage("You must be logged in to view your wishlist.")
+                builder.setPositiveButton("Login") { _, _ ->
+                    startActivity(Intent(this, LoginActivity::class.java))
+                }
+                builder.setNegativeButton("Cancel", null)
+                builder.show()
+            }
         }
         binding.profileBtn.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
@@ -89,6 +101,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     private fun checkUserAddress() {
 
         val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser ?: return
@@ -105,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
     }
+
     private fun showAddressPopup() {
         // 1. Inflate the dialog layout using its specific binding class
         val dialogBinding = DialogAddAddressBinding.inflate(layoutInflater)
@@ -176,6 +190,7 @@ class MainActivity : AppCompatActivity() {
                 }
         }
     }
+
     private fun setupRecyclerViews() {
         popularAdapter = ItemAdapter(mutableListOf())
         moreAdapter = ItemAdapter(mutableListOf())
@@ -236,6 +251,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     // ---------------- BANNER ----------------
     private fun loadBanner() {
         binding.progressBarBanner.visibility = View.VISIBLE
@@ -296,7 +312,7 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    // ---------------- POPULAR ITEMS ----------------
+
     private fun loadPopularItems() {
         binding.progressBarPopular.visibility = View.VISIBLE
 
@@ -403,6 +419,7 @@ class MainActivity : AppCompatActivity() {
             }
         }, 100) // Small delay to ensure RecyclerView has bound the new items
     }
+
     private fun loadUserData() {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {

@@ -52,11 +52,11 @@ class CartAdapter(
             .load(item.picUrl[0])
             .into(holder.binding.picCart)
 
-        // 3. Size Click Listeners
+
         holder.binding.sizeS.setOnClickListener {
             item.selectedSize = "SMALL"
             updatePriceUI()
-            // Optional: Save to managementCart if you want to persist size change
+
         }
 
         holder.binding.sizeM.setOnClickListener {
@@ -83,7 +83,7 @@ class CartAdapter(
         }
     }
 
-    // Helper function to handle the "Selected" look
+
     private fun updateSizeButtonStyles(holder: ViewHolder, selectedSize: String) {
         val context = holder.itemView.context
         val darkBrown = context.getColor(com.example.coffeeshoponline.R.color.darkBrown)

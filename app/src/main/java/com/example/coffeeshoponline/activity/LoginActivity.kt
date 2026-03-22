@@ -48,6 +48,10 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
+        binding.btnLoginAsAdmin.setOnClickListener {
+            startActivity(Intent(this, AdminLoginActivity::class.java))
+        }
+
     }
     private fun setupKeyboardAutoScroll() {
         val scroll = binding.root as ScrollView // Assuming root is ScrollView

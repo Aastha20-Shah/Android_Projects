@@ -87,10 +87,12 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun updateFavIcon() {
-        if (wishlistManager.isInWishlist(item.id)) {
-            binding.favBtn.setImageResource(R.drawable.ic_heart_filled)
-        } else {
-            binding.favBtn.setImageResource(R.drawable.ic_heart_outline)
+        wishlistManager.isInWishlist(item.id) { isFav ->
+            if (isFav) {
+                binding.favBtn.setImageResource(R.drawable.ic_heart_filled)
+            } else {
+                binding.favBtn.setImageResource(R.drawable.ic_heart_outline)
+            }
         }
     }
 
@@ -126,8 +128,25 @@ class DetailActivity : AppCompatActivity() {
         }
 
         binding.favBtn.setOnClickListener {
-            wishlistManager.toggleWishlist(item)
-            updateFavIcon()
+            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                wishlistManager.toggleWishlist(item) { isFav ->
+                    if (isFav) {
+                        binding.favBtn.setImageResource(R.drawable.ic_heart_filled)
+                    } else {
+                        binding.favBtn.setImageResource(R.drawable.ic_heart_outline)
+                    }
+                }
+            } else {
+                val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+                builder.setTitle("Login Required")
+                builder.setMessage("You must be logged in to add items to your wishlist.")
+                builder.setPositiveButton("Login") { _, _ ->
+                    startActivity(android.content.Intent(this, LoginActivity::class.java))
+                }
+                builder.setNegativeButton("Cancel", null)
+                builder.show()
+            }
         }
 
         binding.Backbtn.setOnClickListener {

@@ -39,7 +39,7 @@ class ItemAdapter(
         holder.binding.subtitleTxt.text = item.extra
         holder.binding.priceTxt.text = "₹${item.priceSmall}"
 
-        // 🔥 Load image
+
         if (item.picUrl.isNotEmpty()) {
             Glide.with(context)
                 .load(item.picUrl[0])
@@ -48,16 +48,16 @@ class ItemAdapter(
             holder.binding.pic.setImageDrawable(null)
         }
 
-        // 🔥 CLICK ITEM → OPEN DETAIL PAGE
+
         holder.binding.root.setOnClickListener {
 
-            // selection (optional UI effect)
+
             lastSelectedPosition = selectedPosition
             selectedPosition = position
             notifyItemChanged(lastSelectedPosition)
             notifyItemChanged(selectedPosition)
 
-            // open detail page
+            
             val intent = Intent(context, DetailActivity::class.java)
             intent.putExtra("item", item) // 🔥 PASS FULL ITEM
             context.startActivity(intent)

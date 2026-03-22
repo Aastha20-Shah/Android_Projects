@@ -41,7 +41,7 @@ class ItemListCategoryAdapter(
         holder.binding.priceTxt.text = "₹${item.priceSmall}"
 
 
-        // ✅ GLIDE WITHOUT PLACEHOLDER
+
         if (item.picUrl.isNotEmpty()) {
             Glide.with(context)
                 .load(item.picUrl[0])
@@ -50,7 +50,7 @@ class ItemListCategoryAdapter(
             holder.binding.pic.setImageDrawable(null)
         }
 
-        // ✅ CLICK SELECTION
+
         holder.binding.root.setOnClickListener {
             lastSelectedPosition = selectedPosition
             selectedPosition = position
@@ -58,7 +58,7 @@ class ItemListCategoryAdapter(
             notifyItemChanged(selectedPosition)
 
             val intent = Intent(context, DetailActivity::class.java)
-            intent.putExtra("item", item)   // 🔥 PASS ITEM
+            intent.putExtra("item", item)
             context.startActivity(intent)
         }
     }

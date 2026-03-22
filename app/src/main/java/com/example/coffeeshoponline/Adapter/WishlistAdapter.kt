@@ -43,7 +43,7 @@ class WishlistAdapter(
             holder.binding.pic.setImageDrawable(null)
         }
 
-        // Item click → Detail page
+
         holder.binding.root.setOnClickListener {
             val intent = Intent(
                 holder.itemView.context,

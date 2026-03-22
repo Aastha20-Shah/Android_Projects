@@ -50,7 +50,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.logoutBtn.setOnClickListener {
             auth.signOut()
 
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             intent.flags =
                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
@@ -135,6 +135,8 @@ class ProfileActivity : AppCompatActivity() {
 
         val address = HashMap<String, Any>()
         address["house"] = house
+        address["area"] = area
+        address["landmark"] = landmark
         address["city"] = city
         address["state"] = state
         address["pincode"] = pincode
