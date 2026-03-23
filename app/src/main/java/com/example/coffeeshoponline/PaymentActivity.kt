@@ -12,8 +12,12 @@ import com.example.coffeeshoponline.activity.MainActivity
 import com.example.coffeeshoponline.databinding.ActivityPaymentBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.razorpay.Checkout
+import com.razorpay.PaymentResultListener
+import org.json.JSONObject
+import kotlin.math.roundToInt
 
-class PaymentActivity : AppCompatActivity() {
+class PaymentActivity : AppCompatActivity(), PaymentResultListener {
 
     private lateinit var binding: ActivityPaymentBinding
     private lateinit var managementCart: ManagmentCart
@@ -25,6 +29,10 @@ class PaymentActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Preload Razorpay Checkout
+        Checkout.preload(applicationContext)
+
         binding = ActivityPaymentBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
@@ -42,8 +50,11 @@ class PaymentActivity : AppCompatActivity() {
         binding.placeOrderBtn.setOnClickListener {
 
             val paymentMethod = getSelectedPaymentMethod()
-
-            placeOrder(paymentMethod)
+            if (paymentMethod == "COD") {
+                placeOrder(paymentMethod, "Pending")
+            } else {
+                startRazorpayPayment()
+            }
         }
 
 
@@ -66,6 +77,11 @@ class PaymentActivity : AppCompatActivity() {
             clearAllRadio()
             binding.codOption.isChecked = true
         }
+
+        binding.cardOption.setOnClickListener {
+            clearAllRadio()
+            binding.cardOption.isChecked = true
+        }
         binding.backBtn.setOnClickListener {
             finish()
         }
@@ -77,10 +93,48 @@ class PaymentActivity : AppCompatActivity() {
             binding.gpayOption.isChecked -> "GPay"
             binding.phonepeOption.isChecked -> "PhonePe"
             binding.paytmOption.isChecked -> "Paytm"
+            binding.cardOption.isChecked -> "Card"
             else -> "COD"
         }
     }
-    private fun placeOrder(paymentMethod: String) {
+
+    private fun startRazorpayPayment() {
+        val checkout = Checkout()
+        checkout.setKeyID("rzp_test_RJYHP1TteC3Y5A")
+
+        try {
+            val options = JSONObject()
+            options.put("name", "Coffee Shop Online")
+            options.put("description", "Order Payment")
+            options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png")
+            options.put("theme.color", "#673B25")
+            options.put("currency", "INR")
+            
+            val amountInPaise = (totalAmount * 100).roundToInt()
+            options.put("amount", amountInPaise.toString())
+
+            val retryObj = JSONObject()
+            retryObj.put("enabled", true)
+            retryObj.put("max_count", 4)
+            options.put("retry", retryObj)
+
+            checkout.open(this, options)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Error in payment: ${e.message}", Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+        }
+    }
+
+    override fun onPaymentSuccess(razorpayPaymentID: String?) {
+        val paymentMethod = getSelectedPaymentMethod()
+        placeOrder(paymentMethod, "Success")
+    }
+
+    override fun onPaymentError(errorCode: Int, response: String?) {
+        Toast.makeText(this, "Payment failed. Please try again.", Toast.LENGTH_LONG).show()
+    }
+
+    private fun placeOrder(paymentMethod: String, paymentStatus: String) {
 
         val uid = auth.currentUser?.uid ?: return
 
@@ -97,7 +151,7 @@ class PaymentActivity : AppCompatActivity() {
             "items" to managementCart.getListCart(),
             "totalAmount" to totalAmount,
             "paymentMethod" to paymentMethod,
-            "status" to "Pending",
+            "status" to paymentStatus,
             "timestamp" to System.currentTimeMillis()
         )
 
@@ -131,5 +185,6 @@ class PaymentActivity : AppCompatActivity() {
         binding.phonepeOption.isChecked = false
         binding.paytmOption.isChecked = false
         binding.codOption.isChecked = false
+        binding.cardOption.isChecked = false
     }
     }
