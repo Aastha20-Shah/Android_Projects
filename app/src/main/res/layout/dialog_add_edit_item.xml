@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@drawable/white_full_corner_bg">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/dialogTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add New Product"
+                android:textColor="@color/darkBrown"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/closeBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/close"
+                android:padding="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/darkBrown" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Product Title"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="Description"
+            android:gravity="top"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <EditText
+                android:id="@+id/etPriceSmall"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="Price (S)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/light_border_bg"
+                android:padding="10dp"
+                android:layout_marginEnd="5dp"/>
+
+            <EditText
+                android:id="@+id/etPriceMedium"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="Price (M)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/light_border_bg"
+                android:padding="10dp"
+                android:layout_marginEnd="5dp"/>
+
+            <EditText
+                android:id="@+id/etPriceLarge"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:hint="Price (L)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/light_border_bg"
+                android:padding="10dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etPicUrl"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Picture URL (comma separated)"
+            android:background="@drawable/light_border_bg"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"/>
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/light_border_bg"
+            android:layout_marginBottom="10dp"/>
+
+        <CheckBox
+            android:id="@+id/cbIsPopular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Is Popular Product?"
+            android:textColor="@color/darkBrown"
+            android:layout_marginBottom="16dp"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saveBtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Save Product"
+            android:textColor="@color/white"
+            android:background="@drawable/brown_full_corner_bg"/>
+
+    </LinearLayout>
+</ScrollView>

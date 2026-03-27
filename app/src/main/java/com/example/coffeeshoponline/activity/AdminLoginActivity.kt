@@ -15,6 +15,13 @@ class AdminLoginActivity : AppCompatActivity() {
         binding = ActivityAdminLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.ime())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, java.lang.Math.max(systemBars.bottom, ime.bottom))
+            insets
+        }
+
         binding.btnAdminLogin.setOnClickListener {
             val username = binding.etAdminUsername.text.toString().trim()
             val password = binding.etAdminPassword.text.toString().trim()

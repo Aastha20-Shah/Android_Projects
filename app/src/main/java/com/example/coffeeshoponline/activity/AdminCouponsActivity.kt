@@ -1,5 +1,6 @@
 package com.example.coffeeshoponline.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.coffeeshoponline.databinding.ActivityAdminCouponsBinding
@@ -17,33 +18,33 @@ class AdminCouponsActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
-        binding.adminBottomNav.selectedItemId = com.example.coffeeshoponline.R.id.nav_coupons
+        // No alpha effect - keeping original dark color for all
+        binding.adminBottomNav.navHome.setOnClickListener {
+            startActivity(Intent(this, AdminDashboardActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP })
+            overridePendingTransition(0, 0)
+            finish()
+        }
         
-        binding.adminBottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                com.example.coffeeshoponline.R.id.nav_coupons -> return@setOnItemSelectedListener true
-                com.example.coffeeshoponline.R.id.nav_home -> {
-                    startActivity(android.content.Intent(this, AdminDashboardActivity::class.java).apply { flags = android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP })
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-                com.example.coffeeshoponline.R.id.nav_orders -> {
-                    startActivity(android.content.Intent(this, AdminManageOrdersActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-                com.example.coffeeshoponline.R.id.nav_users -> {
-                    startActivity(android.content.Intent(this, AdminManageUsersActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-                com.example.coffeeshoponline.R.id.nav_menu -> {
-                    startActivity(android.content.Intent(this, AdminMenuActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-            }
-            true
+        binding.adminBottomNav.navOrders.setOnClickListener {
+            startActivity(Intent(this, AdminManageOrdersActivity::class.java))
+            overridePendingTransition(0, 0)
+            finish()
+        }
+        
+        binding.adminBottomNav.navUsers.setOnClickListener {
+            startActivity(Intent(this, AdminManageUsersActivity::class.java))
+            overridePendingTransition(0, 0)
+            finish()
+        }
+        
+        binding.adminBottomNav.navMenu.setOnClickListener {
+            startActivity(Intent(this, AdminMenuActivity::class.java))
+            overridePendingTransition(0, 0)
+            finish()
+        }
+        
+        binding.adminBottomNav.navCoupons.setOnClickListener {
+            // Already here
         }
     }
 }

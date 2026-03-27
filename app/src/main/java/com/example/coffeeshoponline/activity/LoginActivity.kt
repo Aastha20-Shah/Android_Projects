@@ -21,6 +21,12 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, java.lang.Math.max(systemBars.bottom, ime.bottom))
+            insets
+        }
         setupKeyboardAutoScroll()
         auth = FirebaseAuth.getInstance()
         binding.btnLogin.setOnClickListener {
@@ -35,7 +41,9 @@ class LoginActivity : AppCompatActivity() {
 
                         Toast.makeText(this,"Login Successful",Toast.LENGTH_SHORT).show()
 
-                        startActivity(Intent(this, MainActivity::class.java))
+                        val mainIntent = Intent(this, MainActivity::class.java)
+                        mainIntent.putExtra("showAddressPopup", true)
+                        startActivity(mainIntent)
                         finish()
 
                     }else{

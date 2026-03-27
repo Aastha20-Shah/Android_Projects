@@ -43,9 +43,7 @@ class CartActivity : AppCompatActivity() {
         calculateCart()
         binding.button2.setOnClickListener {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            // 2. Hide the keyboard using the EditText's window token
             imm.hideSoftInputFromWindow(binding.editTextText2.windowToken, 0)
-            // 3. Clear focus so the cursor disappears
             binding.editTextText2.clearFocus()
             val user = auth.currentUser
 
@@ -64,9 +62,7 @@ class CartActivity : AppCompatActivity() {
             when (couponCode) {
 
                 "FIRST50" -> {
-
                     val uid = user.uid
-
                     FirebaseDatabase.getInstance()
                         .reference
                         .child("users")
@@ -74,42 +70,33 @@ class CartActivity : AppCompatActivity() {
                         .child("firstOrder")
                         .get()
                         .addOnSuccessListener { snapshot ->
-
                             val isFirstOrder = snapshot.getValue(Boolean::class.java) ?: true
-
-                            if (isFirstOrder==false) {
+                            if (isFirstOrder == false) {
                                 showMessage("FIRST50 coupon is only valid for your first order.")
                                 return@addOnSuccessListener
                             }
-
                             appliedCouponCode = couponCode
                             couponApplied = true
                             showMessage("🎉 FIRST50 applied! You got 50% discount.")
                             calculateCart()
                         }
-
                     return@setOnClickListener
                 }
 
                 "SAVE20" -> {
-
                     appliedCouponCode = couponCode
                     couponApplied = true
                     showMessage("SAVE20 applied successfully!")
-
                 }
 
                 "COFFEE100" -> {
-
                     if (subtotal < 500) {
                         showMessage("Minimum order of ₹500 required for COFFEE100 coupon.")
                         return@setOnClickListener
                     }
-
                     appliedCouponCode = couponCode
                     couponApplied = true
                     showMessage("COFFEE100 applied! ₹100 discount added.")
-
                 }
 
                 else -> {
@@ -117,7 +104,6 @@ class CartActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
             }
-
             calculateCart()
         }
         binding.Backbtn.setOnClickListener {
@@ -146,17 +132,13 @@ class CartActivity : AppCompatActivity() {
         val subtotal = managementCart.getTotalFee()
         discount = 0.0
         if (couponApplied && appliedCouponCode != null) {
-
             when (appliedCouponCode) {
-
                 "FIRST50" -> {
                     discount = subtotal * 0.50
                 }
-
                 "SAVE20" -> {
                     discount = subtotal * 0.20
                 }
-
                 "COFFEE100" -> {
                     if (subtotal >= 500) {
                         discount = 100.0
@@ -185,16 +167,12 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun checkCheckout() {
-
         binding.button.setOnClickListener {
             val user = auth.currentUser ?: run {
                 startActivity(Intent(this, LoginActivity::class.java))
                 return@setOnClickListener
             }
-
-            // Corrected reference: use .child(uid)
             val dbRef = FirebaseDatabase.getInstance().reference.child("users").child(user.uid)
-
             dbRef.get().addOnSuccessListener { snapshot ->
                 val userName = snapshot.child("name").getValue(String::class.java) ?: "Customer"
                 val savedAddress = snapshot.child("address").value as? Map<String, String>
@@ -209,8 +187,15 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun showAddressSelectionDialog(userName: String, savedAddress: Map<String, String>) {
-        val fullAddress =
-            "${savedAddress["house"]}, ${savedAddress["area"]}, ${savedAddress["city"]}"
+        val fullAddress = listOfNotNull(
+            savedAddress["house"]?.takeIf { it.isNotBlank() },
+            savedAddress["area"]?.takeIf { it.isNotBlank() },
+            savedAddress["landmark"]?.takeIf { it.isNotBlank() },
+            savedAddress["city"]?.takeIf { it.isNotBlank() },
+            savedAddress["state"]?.takeIf { it.isNotBlank() },
+            savedAddress["pincode"]?.takeIf { it.isNotBlank() },
+            savedAddress["country"]?.takeIf { it.isNotBlank() }
+        ).joinToString(", ")
 
         AlertDialog.Builder(this)
             .setTitle("Confirm Delivery")
@@ -236,22 +221,26 @@ class CartActivity : AppCompatActivity() {
         dialogBinding.saveAddressBtn.text =
             if (isFirstTime) "Save & Order" else "Use for this Order"
 
+        dialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
         dialogBinding.saveAddressBtn.setOnClickListener {
             val addressMap = mapOf(
                 "house" to dialogBinding.etHouse.text.toString().trim(),
                 "area" to dialogBinding.etArea.text.toString().trim(),
+                "landmark" to dialogBinding.etLandmark.text.toString().trim(),
                 "city" to dialogBinding.etCity.text.toString().trim(),
-                "pincode" to dialogBinding.etPincode.text.toString().trim()
+                "state" to dialogBinding.etState.text.toString().trim(),
+                "pincode" to dialogBinding.etPincode.text.toString().trim(),
+                "country" to dialogBinding.etCountry.text.toString().trim()
             )
 
-            if (addressMap.values.any { it.isEmpty() }) {
-                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            if (addressMap.filterKeys { it != "landmark" }.values.any { it.isEmpty() }) {
+                Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             selectedAddress = addressMap
 
-            // Only save to Firebase Profile if it's their first time
             if (isFirstTime) {
                 FirebaseDatabase.getInstance().reference
                     .child("users").child(auth.currentUser?.uid ?: "")
@@ -276,20 +265,24 @@ class CartActivity : AppCompatActivity() {
         bottomSheet?.layoutParams?.height =
             android.view.ViewGroup.LayoutParams.MATCH_PARENT
 
-        // 2. Setup RecyclerView with your viewholder_cart
         summaryBinding.rvSummaryItems.apply {
             layoutManager = LinearLayoutManager(this@CartActivity)
-            // We set listener to null or empty to prevent editing in summary
             adapter = CartAdapter(managementCart.getListCart(), managementCart, object : ChangeNumberItemsListener {
                 override fun onChanged() {}
             })
         }
 
-        // 3. Dynamic Address
-        val fullAddress = "${selectedAddress?.get("house")}, ${selectedAddress?.get("area")}, ${selectedAddress?.get("city")}"
+        val fullAddress = listOfNotNull(
+            selectedAddress?.get("house")?.takeIf { it.isNotBlank() },
+            selectedAddress?.get("area")?.takeIf { it.isNotBlank() },
+            selectedAddress?.get("landmark")?.takeIf { it.isNotBlank() },
+            selectedAddress?.get("city")?.takeIf { it.isNotBlank() },
+            selectedAddress?.get("state")?.takeIf { it.isNotBlank() },
+            selectedAddress?.get("pincode")?.takeIf { it.isNotBlank() },
+            selectedAddress?.get("country")?.takeIf { it.isNotBlank() }
+        ).joinToString(", ")
         summaryBinding.summaryAddressTxt.text = "$userName\n$fullAddress"
 
-        // 4. Dynamic Prices (Matching your calculation logic)
         val subtotal = managementCart.getTotalFee()
         val discountedSubtotal = subtotal - discount
         val tax = discountedSubtotal * 0.05
@@ -302,14 +295,17 @@ class CartActivity : AppCompatActivity() {
         summaryBinding.totalTaxTxt.text = "₹%.2f".format(tax)
         summaryBinding.totalSum.text = "₹%.2f".format(total)
 
-        // 5. Handle Final Checkout
         summaryBinding.continueBtn.setOnClickListener {
             dialog.dismiss()
             val intent = Intent(this, PaymentActivity::class.java)
 
             intent.putExtra("userName", userName)
-            intent.putExtra("total", binding.totalTxt.text.toString())
-            intent.putExtra("address", selectedAddress.toString())
+            intent.putExtra("address", fullAddress)
+            intent.putExtra("subtotal", subtotal)
+            intent.putExtra("discount", discount)
+            intent.putExtra("delivery", delivery)
+            intent.putExtra("tax", tax)
+            intent.putExtra("total", "₹%.2f".format(total))
 
             startActivity(intent)
         }

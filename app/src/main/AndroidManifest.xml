@@ -20,9 +20,6 @@
             android:name=".PaymentActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.AddressBottomSheet"
-            android:exported="false" />
-        <activity
             android:name=".activity.ProfileActivity"
             android:exported="false" />
         <activity
@@ -78,6 +75,9 @@
             android:exported="false" />
         <activity
             android:name=".activity.AdminCouponsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AdminOrderDetailsActivity"
             android:exported="false" />
     </application>
 

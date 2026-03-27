@@ -1,69 +1,67 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightCream">
 
-<LinearLayout 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_above="@+id/adminBottomNav"
-    android:orientation="vertical"
-    tools:ignore="UnknownIdInLayout">
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center_vertical"
-        android:padding="16dp"
-        android:layout_marginTop="48dp">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/adminBottomNav"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/backBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:layout_marginTop="48dp">
 
-            <ImageView
+            <LinearLayout
+                android:id="@+id/backBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/back" />
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/back" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@color/darkBrown"/>
+            </LinearLayout>
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Back"
-                android:layout_marginStart="8dp"
-                android:textColor="@color/darkBrown"/>
+                android:text="Coupon Management"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/darkBrown"
+                android:gravity="center"/>
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Coupon Management"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@color/darkBrown"
-            android:gravity="center"/>
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Create and edit promotional codes\nhere."
+            android:textColor="@color/brown"
+            android:textSize="16sp" />
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="Create and edit promotional codes\nhere."
-        android:textColor="@color/brown"
-        android:textSize="16sp" />
-</LinearLayout>
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <include
         android:id="@+id/adminBottomNav"
+        layout="@layout/layout_admin_bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        app:itemIconTint="@color/darkBrown"
-        app:itemTextColor="@color/darkBrown"
-        app:menu="@menu/admin_bottom_nav" />
+        android:layout_height="75dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,10 +1,12 @@
 package com.example.coffeeshoponline.Adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coffeeshoponline.activity.AdminOrderDetailsActivity
 import com.example.coffeeshoponline.databinding.ViewholderAdminOrderBinding
 import com.example.coffeeshoponline.model.OrderModel
 import com.google.firebase.database.FirebaseDatabase
@@ -53,10 +55,16 @@ class AdminOrderAdapter(private val orders: List<OrderModel>) :
             val dbRef = FirebaseDatabase.getInstance().reference.child("orders").child(order.orderId)
             dbRef.child("status").setValue("Success").addOnSuccessListener {
                 Toast.makeText(holder.itemView.context, "Order marked as Success", Toast.LENGTH_SHORT).show()
-                // The item will auto update because we have a ValueEventListener in the Activity
             }.addOnFailureListener {
                 Toast.makeText(holder.itemView.context, "Failed to update order", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Click on item to see details
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context, AdminOrderDetailsActivity::class.java)
+            intent.putExtra("order", order)
+            holder.itemView.context.startActivity(intent)
         }
     }
 

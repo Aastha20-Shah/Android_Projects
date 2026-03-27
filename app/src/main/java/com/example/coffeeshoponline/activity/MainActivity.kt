@@ -41,7 +41,9 @@ class MainActivity : AppCompatActivity() {
             .getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/")
             .reference
         loadUserData()
-        checkUserAddress()
+        if (intent.getBooleanExtra("showAddressPopup", false)) {
+            checkUserAddress()
+        }
         popularAdapter = ItemAdapter(mutableListOf())
         moreAdapter = ItemAdapter(mutableListOf())
 
@@ -129,6 +131,7 @@ class MainActivity : AppCompatActivity() {
             .create()
 
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         dialog.show()
 

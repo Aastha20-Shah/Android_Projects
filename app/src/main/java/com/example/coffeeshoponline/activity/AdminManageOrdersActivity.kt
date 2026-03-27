@@ -1,5 +1,6 @@
 package com.example.coffeeshoponline.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -27,33 +28,32 @@ class AdminManageOrdersActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavigation() {
-        binding.adminBottomNav.selectedItemId = com.example.coffeeshoponline.R.id.nav_orders
+        binding.adminBottomNav.navHome.setOnClickListener {
+            startActivity(Intent(this, AdminDashboardActivity::class.java).apply { flags = Intent.FLAG_ACTIVITY_CLEAR_TOP })
+            overridePendingTransition(0, 0)
+            finish()
+        }
         
-        binding.adminBottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                com.example.coffeeshoponline.R.id.nav_orders -> return@setOnItemSelectedListener true
-                com.example.coffeeshoponline.R.id.nav_home -> {
-                    startActivity(android.content.Intent(this, AdminDashboardActivity::class.java).apply { flags = android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP })
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-                com.example.coffeeshoponline.R.id.nav_users -> {
-                    startActivity(android.content.Intent(this, AdminManageUsersActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-                com.example.coffeeshoponline.R.id.nav_menu -> {
-                    startActivity(android.content.Intent(this, AdminMenuActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-                com.example.coffeeshoponline.R.id.nav_coupons -> {
-                    startActivity(android.content.Intent(this, AdminCouponsActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    finish()
-                }
-            }
-            true
+        binding.adminBottomNav.navOrders.setOnClickListener {
+            // Already here
+        }
+        
+        binding.adminBottomNav.navUsers.setOnClickListener {
+            startActivity(Intent(this, AdminManageUsersActivity::class.java))
+            overridePendingTransition(0, 0)
+            finish()
+        }
+        
+        binding.adminBottomNav.navMenu.setOnClickListener {
+            startActivity(Intent(this, AdminMenuActivity::class.java))
+            overridePendingTransition(0, 0)
+            finish()
+        }
+        
+        binding.adminBottomNav.navCoupons.setOnClickListener {
+            startActivity(Intent(this, AdminCouponsActivity::class.java))
+            overridePendingTransition(0, 0)
+            finish()
         }
     }
 
@@ -73,7 +73,7 @@ class AdminManageOrdersActivity : AppCompatActivity() {
                 }
 
                 if (orderList.isNotEmpty()) {
-                    orderList.reverse() // Newest orders first
+                    orderList.reverse()
                     binding.rvAdminOrders.apply {
                         layoutManager = LinearLayoutManager(this@AdminManageOrdersActivity)
                         adapter = AdminOrderAdapter(orderList)

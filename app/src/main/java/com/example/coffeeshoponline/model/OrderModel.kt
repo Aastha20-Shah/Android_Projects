@@ -1,5 +1,7 @@
 package com.example.coffeeshoponline.model
 
+import java.io.Serializable
+
 data class OrderModel(
     val orderId: String = "",
     val status: String = "",
@@ -8,9 +10,9 @@ data class OrderModel(
     val timestamp: Long = 0,
     val userId: String = "",
     val userName: String = "",
-    val address: String = "", // In your JSON, this is a String representation
+    val address: String = "",
     val items: List<OrderItem>? = null
-) {
+) : Serializable {
     fun getFormattedDate(): String {
         val sdf = java.text.SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.getDefault())
         return sdf.format(java.util.Date(timestamp))
