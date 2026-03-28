@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightCream">
 
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -17,25 +17,32 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:gravity="center_vertical"
-            android:padding="16dp"
-            android:layout_marginTop="48dp">
+            android:paddingHorizontal="16dp"
+            android:layout_marginTop="48dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/backBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/back" />
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/back"
+                    app:tint="@color/darkBrown" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Back"
                     android:layout_marginStart="8dp"
-                    android:textColor="@color/darkBrown"/>
+                    android:textColor="@color/darkBrown"
+                    android:textSize="16sp"/>
             </LinearLayout>
 
             <TextView
@@ -50,10 +57,14 @@
 
             <ImageView
                 android:id="@+id/addCategoryBtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/img_1"
-                 />
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/img_10"
+                android:scaleType="fitCenter"
+                app:tint="@null"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

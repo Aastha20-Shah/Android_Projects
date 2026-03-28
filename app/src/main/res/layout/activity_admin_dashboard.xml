@@ -7,8 +7,10 @@
     android:background="@color/lightCream">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/dashboardScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@+id/adminBottomNav"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,7 +20,7 @@
             android:orientation="vertical"
             android:paddingBottom="20dp">
 
-            <!-- Header matching User Panel -->
+            <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +71,7 @@
 
             </LinearLayout>
 
-            <!-- Search Bar Style -->
+            <!-- Search Bar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,31 +111,39 @@
 
                 <!-- Products Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardProducts"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
-                    app:cardBackgroundColor="@color/darkBrown"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="16dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="16dp">
-                        <TextView android:id="@+id/tvTotalProductsCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/white" android:textSize="24sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Products" android:textColor="#BDBDBD" android:textSize="12sp" />
-                        <ProgressBar android:id="@+id/progressProducts" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/white" />
+                        <TextView android:id="@+id/tvTotalProductsCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/darkBrown" android:textSize="24sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/tvProductsLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Products" android:textColor="@color/darkBrown" android:alpha="0.7" android:textSize="12sp" />
+                        <ProgressBar android:id="@+id/progressProducts" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/darkBrown" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Orders Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardOrders"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="16dp">
                     <LinearLayout
@@ -142,18 +152,22 @@
                         android:orientation="vertical"
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalOrders" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/darkBrown" android:textSize="24sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Orders" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
+                        <TextView android:id="@+id/tvOrdersLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Orders" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
                         <ProgressBar android:id="@+id/progressOrders" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/orange" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Clients Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardClients"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="16dp">
                     <LinearLayout
@@ -162,18 +176,22 @@
                         android:orientation="vertical"
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalUsersCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/darkBrown" android:textSize="24sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Clients" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
+                        <TextView android:id="@+id/tvClientsLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Clients" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
                         <ProgressBar android:id="@+id/progressClients" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/darkBrown" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <!-- Revenue Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardRevenue"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
                     android:layout_margin="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="16dp">
                     <LinearLayout
@@ -182,7 +200,7 @@
                         android:orientation="vertical"
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalRevenue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹0" android:textColor="@color/darkBrown" android:textSize="20sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Revenue" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
+                        <TextView android:id="@+id/tvRevenueLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Revenue" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
                         <ProgressBar android:id="@+id/progressRevenue" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="#E91E63" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -190,6 +208,7 @@
 
             <!-- Revenue Chart Area -->
             <LinearLayout
+                android:id="@+id/revenueSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
@@ -201,6 +220,7 @@
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/revenueChartCard"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginHorizontal="16dp"
@@ -211,17 +231,18 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/tvDashboardListLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
-                android:text="Recent Orders"
+                android:text="Recent Orders (Today)"
                 android:textColor="@color/darkBrown"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvRecentOrders"
+                android:id="@+id/rvDashboardList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"

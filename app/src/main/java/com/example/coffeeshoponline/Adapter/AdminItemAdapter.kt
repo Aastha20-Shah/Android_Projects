@@ -22,17 +22,21 @@ class AdminItemAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
-        holder.binding.titleTxt.text = item.title
-        holder.binding.priceTxt.text = "₹${item.priceSmall}"
+        holder.binding.apply {
+            titleTxt.text = item.title
+            priceTxt.text = "₹${item.priceSmall}"
+            extraTxt.text = item.extra
+            descTxt.text = item.description
 
-        if (item.picUrl.isNotEmpty()) {
-            Glide.with(holder.itemView.context)
-                .load(item.picUrl[0])
-                .into(holder.binding.itemPic)
+            if (item.picUrl.isNotEmpty()) {
+                Glide.with(holder.itemView.context)
+                    .load(item.picUrl[0])
+                    .into(itemPic)
+            }
+
+            editBtn.setOnClickListener { onEditClick(item) }
+            deleteBtn.setOnClickListener { onDeleteClick(item) }
         }
-
-        holder.binding.editBtn.setOnClickListener { onEditClick(item) }
-        holder.binding.deleteBtn.setOnClickListener { onDeleteClick(item) }
     }
 
     override fun getItemCount(): Int = items.size

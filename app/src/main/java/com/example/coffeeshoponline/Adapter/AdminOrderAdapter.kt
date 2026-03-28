@@ -1,6 +1,7 @@
 package com.example.coffeeshoponline.Adapter
 
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,10 @@ import com.example.coffeeshoponline.databinding.ViewholderAdminOrderBinding
 import com.example.coffeeshoponline.model.OrderModel
 import com.google.firebase.database.FirebaseDatabase
 
-class AdminOrderAdapter(private val orders: List<OrderModel>) :
-    RecyclerView.Adapter<AdminOrderAdapter.Viewholder>() {
+class AdminOrderAdapter(
+    private val orders: List<OrderModel>,
+    private val canUpdateStatus: Boolean = true // Flag to enable/disable status updates
+) : RecyclerView.Adapter<AdminOrderAdapter.Viewholder>() {
 
     class Viewholder(val binding: ViewholderAdminOrderBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -30,20 +33,20 @@ class AdminOrderAdapter(private val orders: List<OrderModel>) :
         holder.binding.tvAdminOrderUserName.text = order.userName
         holder.binding.tvAdminOrderId.text = "Order ID: ${order.orderId}"
         holder.binding.tvAdminOrderDate.text = "Date: ${order.getFormattedDate()}"
-        holder.binding.tvAdminOrderTotal.text = "₹%.2f".format(order.totalAmount.toDouble())
+        holder.binding.tvAdminOrderTotal.text = "₹%.2f".format(order.totalAmount)
         
         holder.binding.tvAdminOrderMethod.text = order.paymentMethod
         holder.binding.tvAdminOrderStatus.text = order.status
 
         // Status coloring
         if (order.status.equals("Success", ignoreCase = true) || order.status.equals("Received", ignoreCase = true)) {
-            holder.binding.tvAdminOrderStatus.setTextColor(android.graphics.Color.parseColor("#388E3C")) // Green
+            holder.binding.tvAdminOrderStatus.setTextColor(Color.parseColor("#388E3C")) // Green
             holder.binding.btnMarkReceived.visibility = View.GONE
         } else {
-            holder.binding.tvAdminOrderStatus.setTextColor(android.graphics.Color.parseColor("#E65100")) // Orange
+            holder.binding.tvAdminOrderStatus.setTextColor(Color.parseColor("#E65100")) // Orange
             
-            // Show Mark Received button ONLY if COD and not yet Success
-            if (order.paymentMethod.equals("COD", ignoreCase = true)) {
+            // Show Mark Received button ONLY if allowed AND COD and not yet Success
+            if (canUpdateStatus && order.paymentMethod.equals("COD", ignoreCase = true)) {
                 holder.binding.btnMarkReceived.visibility = View.VISIBLE
             } else {
                 holder.binding.btnMarkReceived.visibility = View.GONE

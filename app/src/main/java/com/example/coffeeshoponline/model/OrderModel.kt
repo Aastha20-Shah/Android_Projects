@@ -6,7 +6,7 @@ data class OrderModel(
     val orderId: String = "",
     val status: String = "",
     val paymentMethod: String = "",
-    val totalAmount: Long = 0,
+    val totalAmount: Double = 0.0, // Changed from Long to Double to match pricing
     val timestamp: Long = 0,
     val userId: String = "",
     val userName: String = "",

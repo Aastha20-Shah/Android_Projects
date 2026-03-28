@@ -69,20 +69,16 @@
                     android:id="@+id/btnEditUser"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:background="?attr/selectableItemBackground"
-                    android:padding="4dp"
-                    app:tint="@color/darkBrown" />
+                    android:src="@drawable/img_8"
+                    android:background="?attr/selectableItemBackground" />
 
                 <ImageView
                     android:id="@+id/btnDeleteUser"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@android:drawable/ic_menu_delete"
+                    android:src="@drawable/img_9"
                     android:background="?attr/selectableItemBackground"
-                    android:layout_marginStart="12dp"
-                    android:padding="4dp"
-                    app:tint="#EF5350" />
+                    android:layout_marginStart="12dp"/>
             </LinearLayout>
 
         </LinearLayout>

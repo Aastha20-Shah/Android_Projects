@@ -79,6 +79,9 @@
         <activity
             android:name=".activity.AdminOrderDetailsActivity"
             android:exported="false" />
+        <activity
+            android:name=".activity.AdminUserDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

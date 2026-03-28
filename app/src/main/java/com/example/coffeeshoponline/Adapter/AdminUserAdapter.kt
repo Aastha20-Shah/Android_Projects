@@ -1,5 +1,6 @@
 package com.example.coffeeshoponline.Adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
@@ -7,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.example.coffeeshoponline.activity.AdminUserDetailActivity
 import com.example.coffeeshoponline.databinding.ViewholderAdminUserBinding
 import com.example.coffeeshoponline.model.UserModel
 import com.google.firebase.database.FirebaseDatabase
@@ -32,6 +34,13 @@ class AdminUserAdapter(private val users: List<UserModel>) :
         holder.binding.tvAdminUserPhone.text = user.phone
 
         val context = holder.itemView.context
+
+        // Click on user card to see details and orders
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, AdminUserDetailActivity::class.java)
+            intent.putExtra("user", user)
+            context.startActivity(intent)
+        }
 
         holder.binding.btnDeleteUser.setOnClickListener {
             AlertDialog.Builder(context)
