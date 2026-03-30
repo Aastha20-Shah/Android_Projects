@@ -1,5 +1,6 @@
 package com.example.coffeeshoponline.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -19,7 +20,12 @@ class AdminOrderDetailsActivity : AppCompatActivity() {
         binding = ActivityAdminOrderDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        order = intent.getSerializableExtra("order") as? OrderModel
+        order = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("order", OrderModel::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("order") as? OrderModel
+        }
 
         if (order == null) {
             Toast.makeText(this, "Order data not found", Toast.LENGTH_SHORT).show()
@@ -53,6 +59,7 @@ class AdminOrderDetailsActivity : AppCompatActivity() {
             } else {
                 binding.tvDetailStatus.setTextColor(android.graphics.Color.parseColor("#E65100"))
                 binding.btnMarkStatus.visibility = View.VISIBLE
+                binding.btnMarkStatus.text = "Mark as Delivered"
             }
         }
     }
@@ -67,7 +74,12 @@ class AdminOrderDetailsActivity : AppCompatActivity() {
     private fun updateOrderStatus() {
         order?.let {
             val dbRef = FirebaseDatabase.getInstance().reference.child("orders").child(it.orderId)
-            dbRef.child("status").setValue("Success").addOnSuccessListener {
+            
+            val updates = HashMap<String, Any>()
+            updates["status"] = "Success"
+            updates["paymentStatus"] = "Paid" 
+
+            dbRef.updateChildren(updates).addOnSuccessListener {
                 Toast.makeText(this, "Order marked as Success", Toast.LENGTH_SHORT).show()
                 binding.tvDetailStatus.text = "Success"
                 binding.tvDetailStatus.setTextColor(android.graphics.Color.parseColor("#388E3C"))

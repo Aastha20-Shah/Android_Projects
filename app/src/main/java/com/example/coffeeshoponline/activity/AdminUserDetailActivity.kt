@@ -1,5 +1,6 @@
 package com.example.coffeeshoponline.activity
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -24,11 +25,18 @@ class AdminUserDetailActivity : AppCompatActivity() {
         binding = ActivityAdminUserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        user = intent.getSerializableExtra("user") as UserModel
-        database = FirebaseDatabase.getInstance().reference
+        user = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra("user", UserModel::class.java)!!
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra("user") as UserModel
+        }
+        
+        database = FirebaseDatabase.getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/").reference
 
         setupUI()
         fetchUserOrders()
+        setupRatingBar()
 
         binding.backBtn.setOnClickListener { finish() }
         
@@ -42,14 +50,45 @@ class AdminUserDetailActivity : AppCompatActivity() {
         binding.userEmailTxt.text = user.email
         binding.userPhoneTxt.text = user.phone
         binding.userAddressTxt.text = formatAddress(user.address)
+        binding.userRatingBar.rating = user.userRating
+    }
+
+    private fun setupRatingBar() {
+        binding.userRatingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
+            if (fromUser) {
+                database.child("users").child(user.id).child("userRating").setValue(rating)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "User evaluation updated", Toast.LENGTH_SHORT).show()
+                        user = user.copy(userRating = rating)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Failed to update evaluation", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
     }
 
     private fun formatAddress(address: Any?): String {
         return when (address) {
             is String -> if (address.isEmpty()) "Not specified" else address
             is Map<*, *> -> {
-                // If it's a map (structured address), try to join its values
-                val parts = address.values.filterIsInstance<String>().filter { it.isNotEmpty() }
+                val house = address["house"]?.toString() ?: ""
+                val area = address["area"]?.toString() ?: ""
+                val landmark = address["landmark"]?.toString() ?: ""
+                val city = address["city"]?.toString() ?: ""
+                val state = address["state"]?.toString() ?: ""
+                val pincode = address["pincode"]?.toString() ?: ""
+                val country = address["country"]?.toString() ?: ""
+
+                val parts = mutableListOf<String>()
+                if (house.isNotEmpty()) parts.add(house)
+                if (area.isNotEmpty()) parts.add(area)
+                if (landmark.isNotEmpty()) parts.add(landmark)
+                if (city.isNotEmpty()) parts.add(city)
+                if (state.isNotEmpty()) parts.add(state)
+                if (pincode.isNotEmpty()) parts.add(pincode)
+                if (country.isNotEmpty()) parts.add(country)
+
                 if (parts.isEmpty()) "Not specified" else parts.joinToString(", ")
             }
             else -> "Not specified"
@@ -78,7 +117,11 @@ class AdminUserDetailActivity : AppCompatActivity() {
                     binding.noOrdersTxt.visibility = View.GONE
                     binding.rvUserOrders.visibility = View.VISIBLE
                     binding.rvUserOrders.layoutManager = LinearLayoutManager(this@AdminUserDetailActivity)
-                    binding.rvUserOrders.adapter = AdminOrderAdapter(orderList.reversed(), canUpdateStatus = false)
+                    binding.rvUserOrders.adapter = AdminOrderAdapter(orderList.reversed())
+                }
+                
+                binding.userDetailScrollView.post {
+                    binding.userDetailScrollView.fullScroll(View.FOCUS_UP)
                 }
             }
 
@@ -103,9 +146,10 @@ class AdminUserDetailActivity : AppCompatActivity() {
             hint = "Phone Number"
             setText(user.phone)
         }
+        
+        val currentAddr = formatAddress(user.address)
         val inputAddress = EditText(this).apply {
             hint = "Address"
-            val currentAddr = formatAddress(user.address)
             setText(if (currentAddr == "Not specified") "" else currentAddr)
             minLines = 2
             gravity = android.view.Gravity.TOP
@@ -124,15 +168,15 @@ class AdminUserDetailActivity : AppCompatActivity() {
                 val newAddress = inputAddress.text.toString().trim()
 
                 if (newName.isNotEmpty() && newPhone.isNotEmpty()) {
-                    val updates = mapOf(
+                    val updates = mutableMapOf<String, Any>(
                         "name" to newName,
                         "phone" to newPhone,
-                        "address" to newAddress
+                        "address" to newAddress 
                     )
+                    
                     database.child("users").child(user.id).updateChildren(updates)
                         .addOnSuccessListener {
                             Toast.makeText(this, "User updated", Toast.LENGTH_SHORT).show()
-                            // Update local object and UI
                             user = user.copy(name = newName, phone = newPhone, address = newAddress)
                             setupUI()
                         }

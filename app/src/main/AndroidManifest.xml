@@ -14,6 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Coffeeshoponline">
         <activity
+            android:name=".activity.ThankYouActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserOrderDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.OrderHistoryActivity"
             android:exported="false" />
         <activity
@@ -74,7 +80,7 @@
             android:name=".activity.AdminRevenueActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.AdminCouponsActivity"
+            android:name=".activity.AdminAnalyticsActivity"
             android:exported="false" />
         <activity
             android:name=".activity.AdminOrderDetailsActivity"

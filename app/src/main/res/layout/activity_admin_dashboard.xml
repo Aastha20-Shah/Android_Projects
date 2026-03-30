@@ -62,43 +62,13 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/btnNotification"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/brown_full_corner_bg"
-                    android:padding="12dp"
-                    app:srcCompat="@drawable/bell_icon" />
-
-            </LinearLayout>
-
-            <!-- Search Bar -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginVertical="16dp"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/searchEt"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/white_full_corner_bg"
-                    android:drawableStart="@drawable/search_icon"
-                    android:drawablePadding="8dp"
-                    android:hint="Search analytics..."
-                    android:padding="8dp"
-                    android:textColor="@color/darkBrown" />
-
-                <ImageView
                     android:id="@+id/btnSettings"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
                     android:background="@drawable/brown_full_corner_bg"
                     android:padding="12dp"
                     app:srcCompat="@drawable/settings" />
+
             </LinearLayout>
 
             <!-- Stats Grid -->
@@ -107,6 +77,7 @@
                 android:layout_height="wrap_content"
                 android:columnCount="2"
                 android:paddingHorizontal="8dp"
+                android:layout_marginTop="16dp"
                 android:alignmentMode="alignMargins">
 
                 <!-- Products Card -->
@@ -129,7 +100,6 @@
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalProductsCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/darkBrown" android:textSize="24sp" android:textStyle="bold" />
                         <TextView android:id="@+id/tvProductsLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Products" android:textColor="@color/darkBrown" android:alpha="0.7" android:textSize="12sp" />
-                        <ProgressBar android:id="@+id/progressProducts" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/darkBrown" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -153,7 +123,6 @@
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalOrders" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/darkBrown" android:textSize="24sp" android:textStyle="bold" />
                         <TextView android:id="@+id/tvOrdersLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Orders" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
-                        <ProgressBar android:id="@+id/progressOrders" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/orange" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -177,7 +146,6 @@
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalUsersCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/darkBrown" android:textSize="24sp" android:textStyle="bold" />
                         <TextView android:id="@+id/tvClientsLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total Clients" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
-                        <ProgressBar android:id="@+id/progressClients" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="@color/darkBrown" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -201,33 +169,33 @@
                         android:padding="16dp">
                         <TextView android:id="@+id/tvTotalRevenue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="₹0" android:textColor="@color/darkBrown" android:textSize="20sp" android:textStyle="bold" />
                         <TextView android:id="@+id/tvRevenueLabel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Revenue" android:textColor="@color/darkBrown" android:textSize="12sp" android:alpha="0.7" />
-                        <ProgressBar android:id="@+id/progressRevenue" style="@android:style/Widget.ProgressBar.Horizontal" android:layout_width="match_parent" android:layout_height="4dp" android:layout_marginTop="12dp" android:progressTint="#E91E63" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
             </GridLayout>
 
             <!-- Revenue Chart Area -->
             <LinearLayout
-                android:id="@+id/revenueSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Revenue Analytics" android:textColor="@color/darkBrown" android:textSize="18sp" android:textStyle="bold" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Weekly" android:textColor="@color/white" android:textSize="12sp" android:background="@drawable/brown_full_corner_bg" android:paddingHorizontal="12dp" android:paddingVertical="4dp"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Revenue Analytics (Weekly)" android:textColor="@color/darkBrown" android:textSize="18sp" android:textStyle="bold" />
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/revenueChartCard"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="12dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="16dp">
-                <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/img_6" android:alpha="0.3" android:scaleType="centerInside" android:padding="40dp"/>
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/dashboardRevenueChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp" />
             </androidx.cardview.widget.CardView>
 
             <TextView

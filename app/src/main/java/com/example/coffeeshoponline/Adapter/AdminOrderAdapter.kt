@@ -3,18 +3,14 @@ package com.example.coffeeshoponline.Adapter
 import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.coffeeshoponline.activity.AdminOrderDetailsActivity
 import com.example.coffeeshoponline.databinding.ViewholderAdminOrderBinding
 import com.example.coffeeshoponline.model.OrderModel
-import com.google.firebase.database.FirebaseDatabase
 
 class AdminOrderAdapter(
-    private val orders: List<OrderModel>,
-    private val canUpdateStatus: Boolean = true // Flag to enable/disable status updates
+    private val orders: List<OrderModel>
 ) : RecyclerView.Adapter<AdminOrderAdapter.Viewholder>() {
 
     class Viewholder(val binding: ViewholderAdminOrderBinding) :
@@ -39,28 +35,10 @@ class AdminOrderAdapter(
         holder.binding.tvAdminOrderStatus.text = order.status
 
         // Status coloring
-        if (order.status.equals("Success", ignoreCase = true) || order.status.equals("Received", ignoreCase = true)) {
+        if (order.status.equals("Success", ignoreCase = true)) {
             holder.binding.tvAdminOrderStatus.setTextColor(Color.parseColor("#388E3C")) // Green
-            holder.binding.btnMarkReceived.visibility = View.GONE
         } else {
             holder.binding.tvAdminOrderStatus.setTextColor(Color.parseColor("#E65100")) // Orange
-            
-            // Show Mark Received button ONLY if allowed AND COD and not yet Success
-            if (canUpdateStatus && order.paymentMethod.equals("COD", ignoreCase = true)) {
-                holder.binding.btnMarkReceived.visibility = View.VISIBLE
-            } else {
-                holder.binding.btnMarkReceived.visibility = View.GONE
-            }
-        }
-
-        // Handle Mark as Received Button
-        holder.binding.btnMarkReceived.setOnClickListener {
-            val dbRef = FirebaseDatabase.getInstance().reference.child("orders").child(order.orderId)
-            dbRef.child("status").setValue("Success").addOnSuccessListener {
-                Toast.makeText(holder.itemView.context, "Order marked as Success", Toast.LENGTH_SHORT).show()
-            }.addOnFailureListener {
-                Toast.makeText(holder.itemView.context, "Failed to update order", Toast.LENGTH_SHORT).show()
-            }
         }
 
         // Click on item to see details

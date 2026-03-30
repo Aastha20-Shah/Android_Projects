@@ -25,7 +25,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/back" />
+                android:src="@drawable/back"
+                android:layout_marginTop="4dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -196,7 +197,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Status: "
+                            android:text="Delivery Status: "
                             android:textColor="@color/darkBrown" />
 
                         <TextView

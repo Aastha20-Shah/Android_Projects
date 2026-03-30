@@ -100,6 +100,18 @@
 
         </LinearLayout>
 
+        <RatingBar
+            android:id="@+id/orderRatingBar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:numStars="5"
+            android:progressTint="@color/orange"
+            android:rating="0"
+            android:stepSize="1"
+            android:visibility="gone" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

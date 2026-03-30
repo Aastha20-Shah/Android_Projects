@@ -9,12 +9,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.coffeeshoponline.Helper.ManagmentCart
 import com.example.coffeeshoponline.activity.MainActivity
+import com.example.coffeeshoponline.activity.ThankYouActivity
 import com.example.coffeeshoponline.databinding.ActivityPaymentBinding
+import com.example.coffeeshoponline.model.ItemModel
+import com.example.coffeeshoponline.model.OrderItem
+import com.example.coffeeshoponline.model.OrderModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
-import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.math.roundToInt
 
@@ -43,21 +46,23 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
 
     private val iconRotationRunnable = object : Runnable {
         override fun run() {
-            binding.imgOnline.animate()
-                .translationX(-50f)
-                .alpha(0f)
-                .setDuration(300)
-                .withEndAction {
-                    binding.imgOnline.setImageResource(paymentIcons[currentIconIndex])
-                    currentIconIndex = (currentIconIndex + 1) % paymentIcons.size
-                    binding.imgOnline.translationX = 50f
-                    binding.imgOnline.animate()
-                        .translationX(0f)
-                        .alpha(1f)
-                        .setDuration(300)
-                        .start()
-                }
-                .start()
+            if (::binding.isInitialized && binding.imgOnline != null) {
+                binding.imgOnline.animate()
+                    .translationX(-50f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .withEndAction {
+                        binding.imgOnline.setImageResource(paymentIcons[currentIconIndex])
+                        currentIconIndex = (currentIconIndex + 1) % paymentIcons.size
+                        binding.imgOnline.translationX = 50f
+                        binding.imgOnline.animate()
+                            .translationX(0f)
+                            .alpha(1f)
+                            .setDuration(300)
+                            .start()
+                    }
+                    .start()
+            }
             handler.postDelayed(this, 1000)
         }
     }
@@ -86,34 +91,25 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
         }
 
         binding.placeOrderBtn.setOnClickListener {
-            val paymentMethod = getSelectedPaymentMethod()
-            if (paymentMethod == "COD") {
-                placeOrder(paymentMethod, "Pending")
+            if (binding.codOption.isChecked) {
+                placeOrder("COD")
+            } else if (binding.onlineOption.isChecked) {
+                startRazorpayPayment()
             } else {
-                startRazorpayPayment(paymentMethod)
+                Toast.makeText(this, "Please select a payment method", Toast.LENGTH_SHORT).show()
             }
         }
 
         binding.payOnlineTitleLayout.setOnClickListener {
-            clearMainRadio()
             binding.onlineOption.isChecked = true
-            binding.onlineSubOptionsLayout.visibility = View.VISIBLE
-            if (!binding.gpayOption.isChecked && !binding.phonepeOption.isChecked && 
-                !binding.paytmOption.isChecked && !binding.cardOption.isChecked) {
-                binding.gpayOption.isChecked = true
-            }
+            binding.codOption.isChecked = false
         }
 
         binding.codTitleLayout.setOnClickListener {
-            clearMainRadio()
             binding.codOption.isChecked = true
-            binding.onlineSubOptionsLayout.visibility = View.GONE
+            binding.onlineOption.isChecked = false
         }
 
-        binding.gpayLayout.setOnClickListener { clearNestedRadio(); binding.gpayOption.isChecked = true }
-        binding.phonepeLayout.setOnClickListener { clearNestedRadio(); binding.phonepeOption.isChecked = true }
-        binding.paytmLayout.setOnClickListener { clearNestedRadio(); binding.paytmOption.isChecked = true }
-        binding.cardLayout.setOnClickListener { clearNestedRadio(); binding.cardOption.isChecked = true }
         binding.backBtn.setOnClickListener { finish() }
     }
 
@@ -145,18 +141,7 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
         binding.priceDetailTitle.text = "Price Details ($itemCount Item${if(itemCount > 1) "s" else ""})"
     }
 
-    private fun getSelectedPaymentMethod(): String {
-        return when {
-            binding.codOption.isChecked -> "COD"
-            binding.gpayOption.isChecked -> "GPay"
-            binding.phonepeOption.isChecked -> "PhonePe"
-            binding.paytmOption.isChecked -> "Paytm"
-            binding.cardOption.isChecked -> "Card"
-            else -> "Online"
-        }
-    }
-
-    private fun startRazorpayPayment(method: String) {
+    private fun startRazorpayPayment() {
         val checkout = Checkout()
         checkout.setKeyID("rzp_test_RJYHP1TteC3Y5A")
 
@@ -168,72 +153,9 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
             options.put("currency", "INR")
             options.put("amount", (totalAmount * 100).roundToInt().toString())
 
-            // Force specific payment method
-            when (method) {
-                "GPay" -> {
-                    options.put("method", "upi")
-                    val upi = JSONObject()
-                    upi.put("flow", "intent")
-                    upi.put("app_package", "com.google.android.apps.nbu.paisa.user")
-                    options.put("upi", upi)
-                }
-                "PhonePe" -> {
-                    options.put("method", "upi")
-                    val upi = JSONObject()
-                    upi.put("flow", "intent")
-                    upi.put("app_package", "com.phonepe.app")
-                    options.put("upi", upi)
-                }
-                "Paytm" -> {
-                    options.put("method", "upi")
-                    val upi = JSONObject()
-                    upi.put("flow", "intent")
-                    upi.put("app_package", "net.one97.paytm")
-                    options.put("upi", upi)
-                }
-                "Card" -> {
-                    options.put("method", "card")
-                    
-                    // Config to hide all other methods and show only card
-                    val config = JSONObject()
-                    val display = JSONObject()
-                    val hide = JSONArray()
-                    
-                    val methodsToHide = arrayOf("upi", "netbanking", "wallet")
-                    for (m in methodsToHide) {
-                        val obj = JSONObject()
-                        obj.put("method", m)
-                        hide.put(obj)
-                    }
-                    
-                    display.put("hide", hide)
-                    
-                    // Specific blocks config for card
-                    val blocks = JSONObject()
-                    val cardBlock = JSONObject()
-                    cardBlock.put("name", "Pay using Card")
-                    val instruments = JSONArray()
-                    val cardInstrument = JSONObject()
-                    cardInstrument.put("method", "card")
-                    instruments.put(cardInstrument)
-                    cardBlock.put("instruments", instruments)
-                    blocks.put("card_payment", cardBlock)
-                    
-                    display.put("blocks", blocks)
-                    display.put("sequence", JSONArray().put("block.card_payment"))
-                    
-                    val preferences = JSONObject()
-                    preferences.put("show_default_blocks", false)
-                    display.put("preferences", preferences)
-                    
-                    config.put("display", display)
-                    options.put("config", config)
-                }
-            }
-
             val prefill = JSONObject()
             prefill.put("contact", "9313252046") 
-            prefill.put("email", "customer@example.com")
+            prefill.put("email", auth.currentUser?.email ?: "customer@example.com")
             options.put("prefill", prefill)
 
             checkout.open(this, options)
@@ -243,48 +165,58 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
     }
 
     override fun onPaymentSuccess(razorpayPaymentID: String?) {
-        placeOrder(getSelectedPaymentMethod(), "Success")
+        placeOrder("Online")
     }
 
     override fun onPaymentError(errorCode: Int, response: String?) {
         Toast.makeText(this, "Payment failed.", Toast.LENGTH_LONG).show()
     }
 
-    private fun placeOrder(paymentMethod: String, paymentStatus: String) {
+    private fun placeOrder(paymentMethod: String) {
         val uid = auth.currentUser?.uid ?: return
         val database = FirebaseDatabase.getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/")
         val orderRef = database.reference.child("orders").push()
 
-        val orderData = hashMapOf(
-            "orderId" to orderRef.key,
-            "userId" to uid,
-            "userName" to userName,
-            "address" to address,
-            "items" to managementCart.getListCart(),
-            "totalAmount" to totalAmount,
-            "paymentMethod" to paymentMethod,
-            "status" to paymentStatus,
-            "timestamp" to System.currentTimeMillis()
+        val cartItems: ArrayList<ItemModel> = managementCart.getListCart()
+        
+        // Fix for type mismatch: explicitly map ItemModel to OrderItem
+        val orderItems: List<OrderItem> = cartItems.map { item ->
+            OrderItem(
+                title = item.title,
+                numberInCart = item.numberInCart,
+                selectedSize = item.selectedSize,
+                priceSmall = item.priceSmall,
+                priceMedium = item.priceMedium,
+                priceLarge = item.priceLarge,
+                picUrl = item.picUrl
+            )
+        }
+
+        val orderId = orderRef.key ?: ""
+        val timestamp = System.currentTimeMillis()
+        val paymentStatus = if (paymentMethod == "Online") "Paid" else "Unpaid"
+
+        val orderModel = OrderModel(
+            orderId = orderId,
+            status = "Pending",
+            paymentStatus = paymentStatus,
+            paymentMethod = paymentMethod,
+            totalAmount = totalAmount,
+            timestamp = timestamp,
+            userId = uid,
+            userName = userName ?: "",
+            address = address ?: "",
+            items = orderItems
         )
 
-        orderRef.setValue(orderData).addOnSuccessListener {
+        orderRef.setValue(orderModel).addOnSuccessListener {
             managementCart.clearCart()
-            Toast.makeText(this, "☕ Order Placed Successfully!", Toast.LENGTH_LONG).show()
-            startActivity(Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+            val intent = Intent(this, ThankYouActivity::class.java)
+            intent.putExtra("order", orderModel)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
             finish()
         }
-    }
-
-    private fun clearMainRadio() {
-        binding.onlineOption.isChecked = false
-        binding.codOption.isChecked = false
-    }
-
-    private fun clearNestedRadio() {
-        binding.gpayOption.isChecked = false
-        binding.phonepeOption.isChecked = false
-        binding.paytmOption.isChecked = false
-        binding.cardOption.isChecked = false
     }
 
     override fun onDestroy() {

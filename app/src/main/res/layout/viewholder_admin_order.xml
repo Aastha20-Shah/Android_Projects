@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Status: "
+                android:text="Delivery Status: "
                 android:textStyle="bold" />
                 
             <TextView
@@ -96,18 +96,6 @@
                 android:text="Pending"
                 android:textColor="#E65100"
                 android:textStyle="bold"/>
-                
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnMarkReceived"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="Mark Received"
-                android:textSize="10sp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:background="@drawable/brown_full_corner_bg"
-                android:visibility="gone"
-                android:paddingHorizontal="12dp"/>
         </LinearLayout>
 
     </LinearLayout>

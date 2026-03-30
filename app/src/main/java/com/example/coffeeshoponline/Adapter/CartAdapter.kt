@@ -10,7 +10,7 @@ import com.example.coffeeshoponline.databinding.ViewholderCartBinding
 import com.example.coffeeshoponline.model.ItemModel
 
 class CartAdapter(
-    private val listItem: ArrayList<ItemModel>,
+    var listItems: ArrayList<ItemModel>,
     private val managementCart: ManagmentCart,
     private val listener: ChangeNumberItemsListener
 ) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
@@ -26,7 +26,7 @@ class CartAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = listItem[position]
+        val item = listItems[position]
 
         holder.binding.titleTxt.text = item.title
         holder.binding.numberInCartTxt.text = item.numberInCart.toString()
@@ -71,15 +71,15 @@ class CartAdapter(
 
         // Existing buttons
         holder.binding.plusBtn.setOnClickListener {
-            managementCart.plusItem(listItem, position, listener)
+            managementCart.plusItem(listItems, position, listener)
         }
 
         holder.binding.minusBtn.setOnClickListener {
-            managementCart.minusItem(listItem, position, listener)
+            managementCart.minusItem(listItems, position, listener)
         }
 
         holder.binding.removeItemBtn.setOnClickListener {
-            managementCart.romveItem(listItem, position, listener)
+            managementCart.romveItem(listItems, position, listener)
         }
     }
 
@@ -109,5 +109,5 @@ class CartAdapter(
         }
     }
 
-    override fun getItemCount(): Int = listItem.size
+    override fun getItemCount(): Int = listItems.size
 }

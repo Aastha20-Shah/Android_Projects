@@ -1,17 +1,15 @@
 package com.example.coffeeshoponline.Adapter
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.coffeeshoponline.R
 import com.example.coffeeshoponline.databinding.ViewholderOrderBinding
 import com.example.coffeeshoponline.model.OrderModel
+import com.example.coffeeshoponline.activity.UserOrderDetailsActivity
 
 class OrderAdapter (private val items: List<OrderModel>) :
     RecyclerView.Adapter<OrderAdapter.ViewHolder>() {
@@ -56,20 +54,31 @@ class OrderAdapter (private val items: List<OrderModel>) :
                 }
             }
 
+            // Show rating if available
+            if (order.rating > 0) {
+                orderRatingBar.visibility = View.VISIBLE
+                orderRatingBar.rating = order.rating
+            } else {
+                orderRatingBar.visibility = View.GONE
+            }
+
             // Status Styling
             when (order.status) {
                 "Pending" -> {
                     orderStatusTxt.setTextColor(Color.parseColor("#FFA500"))
                     orderStatusTxt.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FFF3E0"))
                 }
-                "Success", "Received" -> {
+                "Success", "Received", "Delivered" -> {
                     orderStatusTxt.setTextColor(Color.parseColor("#388E3C"))
                     orderStatusTxt.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E8F5E9"))
                 }
-                "Delivered" -> {
-                    orderStatusTxt.setTextColor(Color.parseColor("#4CAF50"))
-                    orderStatusTxt.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E8F5E9"))
-                }
+            }
+
+            // Click to open details
+            root.setOnClickListener {
+                val intent = Intent(holder.itemView.context, UserOrderDetailsActivity::class.java)
+                intent.putExtra("order", order)
+                holder.itemView.context.startActivity(intent)
             }
         }
     }

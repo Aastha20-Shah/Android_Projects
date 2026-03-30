@@ -51,6 +51,7 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/userDetailScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -168,7 +169,33 @@
                         android:layout_height="wrap_content"
                         android:text="Not specified"
                         android:textSize="16sp"
-                        android:textColor="@color/darkBrown" />
+                        android:textColor="@color/darkBrown"
+                        android:layout_marginBottom="16dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EEEEEE"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User Rating"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/darkBrown"
+                        android:layout_marginBottom="8dp" />
+
+                    <RatingBar
+                        android:id="@+id/userRatingBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:stepSize="0.5"
+                        style="?android:attr/ratingBarStyle"
+                        android:progressTint="@color/orange"
+                        android:layout_gravity="center_horizontal" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

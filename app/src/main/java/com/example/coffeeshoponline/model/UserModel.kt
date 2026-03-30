@@ -8,5 +8,6 @@ data class UserModel(
     val email: String = "",
     val phone: String = "",
     val address: Any? = null, // Changed to Any? to handle both String and Object/Map from database
-    val firstOrder: Boolean = false
+    val firstOrder: Boolean = false,
+    val userRating: Float = 0f // Added for admin to rate/evaluate user
 ) : Serializable

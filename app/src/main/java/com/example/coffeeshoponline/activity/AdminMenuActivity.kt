@@ -92,7 +92,7 @@ class AdminMenuActivity : AppCompatActivity() {
                     category?.let { categoryList.add(it) }
                 }
                 // Notify the category adapter if the dialog is open
-                categoryAdapter?.notifyDataSetChanged()
+                categoryAdapter?.updateData(categoryList)
             }
             override fun onCancelled(error: DatabaseError) {}
         })
@@ -114,6 +114,7 @@ class AdminMenuActivity : AppCompatActivity() {
 
         if (item != null) {
             dialogBinding.dialogTitle.text = "Update Product"
+            dialogBinding.saveBtn.text = "UPDATE PRODUCT"
             dialogBinding.etTitle.setText(item.title)
             dialogBinding.etDescription.setText(item.description)
             dialogBinding.etExtra.setText(item.extra)
@@ -127,6 +128,9 @@ class AdminMenuActivity : AppCompatActivity() {
             val catIdValue = (item.categoryId as? Number)?.toInt() ?: 0
             val catIndex = categoryList.indexOfFirst { it.id == catIdValue }
             if (catIndex != -1) dialogBinding.spinnerCategory.setSelection(catIndex)
+        } else {
+            dialogBinding.dialogTitle.text = "Add Item"
+            dialogBinding.saveBtn.text = "SAVE PRODUCT"
         }
 
         dialogBinding.saveBtn.setOnClickListener {
@@ -139,6 +143,7 @@ class AdminMenuActivity : AppCompatActivity() {
             val rating = dialogBinding.etRating.text.toString().toDoubleOrNull() ?: 0.0
             val picsStr = dialogBinding.etPicUrl.text.toString()
             val pics = picsStr.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+            
             val isPop = if (dialogBinding.cbIsPopular.isChecked) 1L else 0L
             
             val selectedCatIndex = dialogBinding.spinnerCategory.selectedItemPosition
@@ -158,7 +163,6 @@ class AdminMenuActivity : AppCompatActivity() {
 
             val id = item?.id ?: ((itemList.maxOfOrNull { it.id } ?: 0) + 1)
             
-            // Use named arguments to ensure correct mapping to ItemModel
             val newItem = ItemModel(
                 id = id,
                 title = title,
@@ -169,7 +173,7 @@ class AdminMenuActivity : AppCompatActivity() {
                 priceMedium = pM,
                 priceLarge = pL,
                 rating = rating,
-                isPopular = isPop,
+                isPopular = isPop, 
                 categoryId = catId
             )
 
@@ -188,7 +192,7 @@ class AdminMenuActivity : AppCompatActivity() {
         val dialogBinding = DialogManageCategoriesBinding.inflate(LayoutInflater.from(this))
         val dialog = AlertDialog.Builder(this).setView(dialogBinding.root).create()
 
-        categoryAdapter = AdminCategoryAdapter(categoryList, 
+        categoryAdapter = AdminCategoryAdapter(categoryList.toList(), 
             onEditClick = { category -> showEditCategoryDialog(category) },
             onDeleteClick = { category -> confirmDeleteCategory(category) }
         )
@@ -209,7 +213,7 @@ class AdminMenuActivity : AppCompatActivity() {
         dialogBinding.closeCategoryBtn.setOnClickListener { dialog.dismiss() }
         
         dialog.setOnDismissListener {
-            categoryAdapter = null // Prevent crash by removing reference
+            categoryAdapter = null
         }
         
         dialog.show()
@@ -230,17 +234,55 @@ class AdminMenuActivity : AppCompatActivity() {
 
     private fun confirmDeleteCategory(category: CategoryModel) {
         AlertDialog.Builder(this).setTitle("Delete Category")
-            .setMessage("Delete '${category.title}'? Products in this category will remain but without a category reference.")
+            .setMessage("Delete '${category.title}'? All products in this category will also be deleted from everywhere.")
             .setPositiveButton("Delete") { _, _ ->
-                database.child("categories").child(category.id.toString()).removeValue()
+                deleteCategoryWithItems(category)
             }.setNegativeButton("Cancel", null).show()
+    }
+
+    private fun deleteCategoryWithItems(category: CategoryModel) {
+        database.child("items").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (child in snapshot.children) {
+                    val item = child.getValue(ItemModel::class.java)
+                    if (item != null) {
+                        // Firebase numbers might be Long, convert both to Int for safe comparison
+                        val itemCatId = (item.categoryId as? Number)?.toInt() ?: -1
+                        if (itemCatId == category.id) {
+                            deleteItemEverywhere(item)
+                        }
+                    }
+                }
+                database.child("categories").child(category.id.toString()).removeValue()
+                    .addOnSuccessListener {
+                        Toast.makeText(this@AdminMenuActivity, "Category and associated items deleted", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     private fun confirmDeleteItem(item: ItemModel) {
         AlertDialog.Builder(this).setTitle("Delete Product").setMessage("Delete '${item.title}'?")
             .setPositiveButton("Delete") { _, _ ->
-                database.child("items").child(item.id.toString()).removeValue()
+                deleteItemEverywhere(item)
             }.setNegativeButton("Cancel", null).show()
+    }
+
+    private fun deleteItemEverywhere(item: ItemModel) {
+        // 1. Delete from main items
+        database.child("items").child(item.id.toString()).removeValue()
+
+        // 2. Delete from all users' wishlists
+        database.child("users").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (userSnapshot in snapshot.children) {
+                    val uid = userSnapshot.key ?: continue
+                    database.child("users").child(uid).child("wishlist").child(item.id.toString()).removeValue()
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     private fun setupBottomNavigation() {
@@ -257,7 +299,7 @@ class AdminMenuActivity : AppCompatActivity() {
             finish()
         }
         binding.adminBottomNav.navCoupons.setOnClickListener {
-            startActivity(Intent(this, AdminCouponsActivity::class.java))
+            startActivity(Intent(this, AdminAnalyticsActivity::class.java))
             finish()
         }
     }

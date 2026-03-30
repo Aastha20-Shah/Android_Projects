@@ -20,6 +20,9 @@ import com.example.coffeeshoponline.databinding.DialogAddAddressBinding
 import com.example.coffeeshoponline.databinding.LayoutOrderSummaryBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
@@ -37,10 +40,19 @@ class CartActivity : AppCompatActivity() {
         binding = ActivityCartBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
+        
+        if (auth.currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
         managementCart = ManagmentCart(this)
 
+        validateCartItems()
         initCart()
         calculateCart()
+        
         binding.button2.setOnClickListener {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.editTextText2.windowToken, 0)
@@ -106,10 +118,43 @@ class CartActivity : AppCompatActivity() {
             }
             calculateCart()
         }
+        
         binding.Backbtn.setOnClickListener {
             finish()
         }
+
+        binding.continueBtn.setOnClickListener {
+            finish()
+        }
+
         checkCheckout()
+    }
+
+    private fun validateCartItems() {
+        val cartList = managementCart.getListCart()
+        if (cartList.isEmpty()) return
+
+        FirebaseDatabase.getInstance().reference.child("items")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val validItemIds = snapshot.children.mapNotNull { it.key?.toIntOrNull() }.toSet()
+                    val updatedCartList = cartList.filter { it.id in validItemIds }
+                    
+                    if (updatedCartList.size != cartList.size) {
+                        // Some items were deleted by admin
+                        val updatedArrayList = ArrayList(updatedCartList)
+                        val user = auth.currentUser
+                        if (user != null) {
+                            val tinyDB = com.example.coffeeshoponline.Helper.TinyDB(this@CartActivity)
+                            tinyDB.putListObject("CartList_" + user.uid, updatedArrayList)
+                            initCart()
+                            calculateCart()
+                            Toast.makeText(this@CartActivity, "Some items in your cart are no longer available", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {}
+            })
     }
 
     private fun initCart() {
@@ -122,13 +167,30 @@ class CartActivity : AppCompatActivity() {
             object : ChangeNumberItemsListener {
                 override fun onChanged() {
                     calculateCart()
-                    binding.listView.adapter?.notifyDataSetChanged()
                 }
             }
         )
     }
 
     private fun calculateCart() {
+        val listCart = managementCart.getListCart()
+        if (listCart.isEmpty()) {
+            binding.emptyCartLayout.visibility = View.VISIBLE
+            binding.listView.visibility = View.GONE
+            binding.couponLayout.visibility = View.GONE
+            binding.linearLayout.visibility = View.GONE
+        } else {
+            binding.emptyCartLayout.visibility = View.GONE
+            binding.listView.visibility = View.VISIBLE
+            binding.couponLayout.visibility = View.VISIBLE
+            binding.linearLayout.visibility = View.VISIBLE
+            
+            (binding.listView.adapter as? CartAdapter)?.let {
+                it.listItems = listCart
+                it.notifyDataSetChanged()
+            }
+        }
+
         val subtotal = managementCart.getTotalFee()
         discount = 0.0
         if (couponApplied && appliedCouponCode != null) {
@@ -159,7 +221,7 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun showMessage(message: String) {
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle("Coupon")
         builder.setMessage(message)
         builder.setPositiveButton("OK", null)
@@ -172,6 +234,12 @@ class CartActivity : AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java))
                 return@setOnClickListener
             }
+            
+            if (managementCart.getListCart().isEmpty()) {
+                Toast.makeText(this, "Your cart is empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val dbRef = FirebaseDatabase.getInstance().reference.child("users").child(user.uid)
             dbRef.get().addOnSuccessListener { snapshot ->
                 val userName = snapshot.child("name").getValue(String::class.java) ?: "Customer"

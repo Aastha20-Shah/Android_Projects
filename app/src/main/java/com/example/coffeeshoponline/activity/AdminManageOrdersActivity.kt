@@ -51,7 +51,7 @@ class AdminManageOrdersActivity : AppCompatActivity() {
         }
         
         binding.adminBottomNav.navCoupons.setOnClickListener {
-            startActivity(Intent(this, AdminCouponsActivity::class.java))
+            startActivity(Intent(this, AdminAnalyticsActivity::class.java))
             overridePendingTransition(0, 0)
             finish()
         }

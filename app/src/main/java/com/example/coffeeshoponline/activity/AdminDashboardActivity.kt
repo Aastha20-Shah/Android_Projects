@@ -3,7 +3,6 @@ package com.example.coffeeshoponline.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +17,14 @@ import com.example.coffeeshoponline.databinding.ActivityAdminDashboardBinding
 import com.example.coffeeshoponline.model.ItemModel
 import com.example.coffeeshoponline.model.OrderModel
 import com.example.coffeeshoponline.model.UserModel
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class AdminDashboardActivity : AppCompatActivity() {
@@ -30,8 +35,8 @@ class AdminDashboardActivity : AppCompatActivity() {
     private val allProducts = mutableListOf<ItemModel>()
     private val allUsers = mutableListOf<UserModel>()
     
-    private enum class DashboardType { PRODUCTS, ALL_ORDERS, CLIENTS, REVENUE, TODAY_ORDERS }
-    private var currentSelection = DashboardType.TODAY_ORDERS // Default view
+    private enum class DashboardType { PRODUCTS, ORDERS, CLIENTS, REVENUE, TODAY_ORDERS }
+    private var currentSelection = DashboardType.TODAY_ORDERS 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +46,37 @@ class AdminDashboardActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/").reference
         
         setupBottomNavigation()
+        setupChart()
         loadAllData()
         setupClickListeners()
         setupLogout()
         
-        // Initialize UI with Today's Orders as default
         updateCardUI(DashboardType.TODAY_ORDERS)
+    }
+
+    private fun setupChart() {
+        binding.dashboardRevenueChart.apply {
+            description.isEnabled = false
+            setDrawGridBackground(false)
+            setDrawBarShadow(false)
+            setDrawValueAboveBar(true)
+            setPinchZoom(false)
+            
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                setDrawGridLines(false)
+                granularity = 1f
+                textColor = Color.parseColor("#220c01")
+            }
+            
+            axisLeft.apply {
+                setDrawGridLines(true)
+                textColor = Color.parseColor("#220c01")
+            }
+            
+            axisRight.isEnabled = false
+            legend.isEnabled = false
+        }
     }
     
     private fun setupClickListeners() {
@@ -58,8 +88,8 @@ class AdminDashboardActivity : AppCompatActivity() {
         }
         
         binding.cardOrders.setOnClickListener {
-            currentSelection = DashboardType.ALL_ORDERS
-            updateCardUI(DashboardType.ALL_ORDERS)
+            currentSelection = DashboardType.ORDERS
+            updateCardUI(DashboardType.ORDERS)
             showAllOrdersList()
             scrollToList()
         }
@@ -74,11 +104,10 @@ class AdminDashboardActivity : AppCompatActivity() {
         binding.cardRevenue.setOnClickListener {
             currentSelection = DashboardType.REVENUE
             updateCardUI(DashboardType.REVENUE)
-            showAllOrdersList() // Total Revenue relates to all orders
+            showAllOrdersList() 
             scrollToList()
         }
         
-        // Clicking Dashboard title resets to Today's Orders view
         binding.tvAdminName.setOnClickListener {
             currentSelection = DashboardType.TODAY_ORDERS
             updateCardUI(DashboardType.TODAY_ORDERS)
@@ -87,25 +116,23 @@ class AdminDashboardActivity : AppCompatActivity() {
     }
 
     private fun updateCardUI(selected: DashboardType) {
-        // Reset all cards to default White theme
         resetCardStyle(binding.cardProducts, binding.tvTotalProductsCount, binding.tvProductsLabel)
         resetCardStyle(binding.cardOrders, binding.tvTotalOrders, binding.tvOrdersLabel)
         resetCardStyle(binding.cardClients, binding.tvTotalUsersCount, binding.tvClientsLabel)
         resetCardStyle(binding.cardRevenue, binding.tvTotalRevenue, binding.tvRevenueLabel)
 
-        // Highlight only the active selection in Dark Brown
         when (selected) {
             DashboardType.PRODUCTS -> {
                 highlightCardStyle(binding.cardProducts, binding.tvTotalProductsCount, binding.tvProductsLabel)
                 binding.tvDashboardListLabel.text = "All Products"
             }
-            DashboardType.ALL_ORDERS -> {
+            DashboardType.ORDERS -> {
                 highlightCardStyle(binding.cardOrders, binding.tvTotalOrders, binding.tvOrdersLabel)
-                binding.tvDashboardListLabel.text = "Total Orders (All Time)"
+                binding.tvDashboardListLabel.text = "All Orders"
             }
             DashboardType.CLIENTS -> {
                 highlightCardStyle(binding.cardClients, binding.tvTotalUsersCount, binding.tvClientsLabel)
-                binding.tvDashboardListLabel.text = "All Registered Clients"
+                binding.tvDashboardListLabel.text = "All Clients"
             }
             DashboardType.REVENUE -> {
                 highlightCardStyle(binding.cardRevenue, binding.tvTotalRevenue, binding.tvRevenueLabel)
@@ -140,7 +167,6 @@ class AdminDashboardActivity : AppCompatActivity() {
     private fun loadAllData() {
         binding.rvDashboardList.layoutManager = LinearLayoutManager(this)
         
-        // Products listener
         database.child("items").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 allProducts.clear()
@@ -153,7 +179,6 @@ class AdminDashboardActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {}
         })
 
-        // Users listener
         database.child("users").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 allUsers.clear()
@@ -170,7 +195,6 @@ class AdminDashboardActivity : AppCompatActivity() {
             override fun onCancelled(error: DatabaseError) {}
         })
 
-        // Orders listener
         database.child("orders").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 allOrders.clear()
@@ -179,21 +203,59 @@ class AdminDashboardActivity : AppCompatActivity() {
                     val order = child.getValue(OrderModel::class.java)
                     if (order != null) {
                         allOrders.add(order)
-                        revenue += order.totalAmount
+                        if (order.status.equals("Success", ignoreCase = true) || order.status.equals("Delivered", ignoreCase = true)) {
+                            revenue += order.totalAmount
+                        }
                     }
                 }
                 binding.tvTotalOrders.text = allOrders.size.toString()
                 binding.tvTotalRevenue.text = "₹%.0f".format(revenue)
                 
-                // Update active list based on selection
+                updateChartData()
+                
                 when (currentSelection) {
                     DashboardType.TODAY_ORDERS -> showTodayOrdersList()
-                    DashboardType.ALL_ORDERS, DashboardType.REVENUE -> showAllOrdersList()
+                    DashboardType.ORDERS, DashboardType.REVENUE -> showAllOrdersList()
                     else -> {}
                 }
             }
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    private fun updateChartData() {
+        val entries = mutableListOf<BarEntry>()
+        val labels = mutableListOf<String>()
+        val calendar = Calendar.getInstance()
+        
+        for (i in 6 downTo 0) {
+            calendar.time = Date()
+            calendar.add(Calendar.DAY_OF_YEAR, -i)
+            val dayStart = calendar.apply { set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0); set(Calendar.SECOND, 0) }.timeInMillis
+            val dayEnd = calendar.apply { set(Calendar.HOUR_OF_DAY, 23); set(Calendar.MINUTE, 59); set(Calendar.SECOND, 59) }.timeInMillis
+            
+            val dayRevenue = allOrders.filter { 
+                it.timestamp in dayStart..dayEnd && (it.status.equals("Success", ignoreCase = true) || it.status.equals("Delivered", ignoreCase = true))
+            }.sumOf { it.totalAmount }
+            
+            entries.add(BarEntry((6 - i).toFloat(), dayRevenue.toFloat()))
+            labels.add(SimpleDateFormat("EEE", Locale.getDefault()).format(calendar.time))
+        }
+
+        val dataSet = BarDataSet(entries, "Weekly Revenue")
+        dataSet.color = Color.parseColor("#f69724")
+        dataSet.valueTextColor = Color.parseColor("#220c01")
+        dataSet.valueTextSize = 10f
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+        
+        binding.dashboardRevenueChart.apply {
+            data = barData
+            xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+            animateY(1000)
+            invalidate()
+        }
     }
 
     private fun showTodayOrdersList() {
@@ -205,11 +267,11 @@ class AdminDashboardActivity : AppCompatActivity() {
             orderDate.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
         }.sortedByDescending { it.timestamp }
         
-        binding.rvDashboardList.adapter = AdminOrderAdapter(todayOrders, canUpdateStatus = false)
+        binding.rvDashboardList.adapter = AdminOrderAdapter(todayOrders)
     }
 
     private fun showAllOrdersList() {
-        binding.rvDashboardList.adapter = AdminOrderAdapter(allOrders.sortedByDescending { it.timestamp }, canUpdateStatus = false)
+        binding.rvDashboardList.adapter = AdminOrderAdapter(allOrders.sortedByDescending { it.timestamp })
     }
 
     private fun showProductsList() {
@@ -256,7 +318,7 @@ class AdminDashboardActivity : AppCompatActivity() {
             navigateToMenu()
         }
         binding.adminBottomNav.navCoupons.setOnClickListener {
-            startActivity(Intent(this, AdminCouponsActivity::class.java))
+            startActivity(Intent(this, AdminAnalyticsActivity::class.java))
         }
     }
 }

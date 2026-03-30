@@ -6,9 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.coffeeshoponline"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.coffeeshoponline"
@@ -61,5 +59,6 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.code.gson:gson:2.13.1")
     implementation("com.razorpay:checkout:1.6.38")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 }

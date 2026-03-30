@@ -70,8 +70,6 @@
                 android:layout_gravity="center"
                 android:padding="5dp"
                 app:shapeAppearanceOverlay="@style/CircleCornerImageView"
-                app:strokeColor="@color/darkBrown"
-                app:strokeWidth="2dp"
                 app:srcCompat="@drawable/profile"/>
 
             <!-- PROFILE CARD -->

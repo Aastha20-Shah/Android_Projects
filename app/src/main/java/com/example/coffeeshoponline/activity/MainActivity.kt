@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         popularAdapter = ItemAdapter(mutableListOf())
         moreAdapter = ItemAdapter(mutableListOf())
 
-        // 🔥 FIX 2: Set adapters IMMEDIATELY (prevents "No adapter attached")
         binding.recyclerViewPopular.apply {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = popularAdapter
@@ -77,7 +76,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.nestedScrollView.isSmoothScrollingEnabled = true
         binding.cartBtn.setOnClickListener {
-            startActivity(Intent(this, CartActivity::class.java))
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                startActivity(Intent(this, CartActivity::class.java))
+            } else {
+                showLoginRequiredDialog("view your cart")
+            }
         }
 
         binding.whishList.setOnClickListener {
@@ -85,23 +89,32 @@ class MainActivity : AppCompatActivity() {
             if (user != null) {
                 startActivity(Intent(this, WishListActivity::class.java))
             } else {
-                val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-                builder.setTitle("Login Required")
-                builder.setMessage("You must be logged in to view your wishlist.")
-                builder.setPositiveButton("Login") { _, _ ->
-                    startActivity(Intent(this, LoginActivity::class.java))
-                }
-                builder.setNegativeButton("Cancel", null)
-                builder.show()
+                showLoginRequiredDialog("view your wishlist")
             }
         }
         binding.profileBtn.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
         binding.myOrder.setOnClickListener {
-            startActivity(Intent(this, OrderHistoryActivity::class.java))
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                startActivity(Intent(this, OrderHistoryActivity::class.java))
+            } else {
+                showLoginRequiredDialog("view your order history")
+            }
         }
 
+    }
+
+    private fun showLoginRequiredDialog(action: String) {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setTitle("Login Required")
+        builder.setMessage("You must be logged in to $action.")
+        builder.setPositiveButton("Login") { _, _ ->
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 
     private fun checkUserAddress() {
@@ -122,7 +135,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showAddressPopup() {
-        // 1. Inflate the dialog layout using its specific binding class
         val dialogBinding = DialogAddAddressBinding.inflate(layoutInflater)
 
         val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
@@ -210,7 +222,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ---------------- SEARCH LOGIC ----------------
     private fun setupSearch() {
         binding.editTextText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -226,17 +237,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun filterItems(query: String) {
         if (query.isEmpty()) {
-            // Show everything again if search is empty
             binding.banner.visibility = View.VISIBLE
             binding.textView3.visibility = View.VISIBLE
             binding.categoryView.visibility = View.VISIBLE
             binding.recyclerViewPopular.visibility = View.VISIBLE
-            // Reset "More Coffee" title
             binding.seeAllMore.parent.let { (it as View).visibility = View.VISIBLE }
 
-            loadMoreCoffee() // Restore original list
+            loadMoreCoffee() 
         } else {
-            // Hide other sections to show search results clearly
             binding.banner.visibility = View.GONE
             binding.textView3.visibility = View.GONE
             binding.categoryView.visibility = View.GONE
@@ -255,7 +263,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ---------------- BANNER ----------------
     private fun loadBanner() {
         binding.progressBarBanner.visibility = View.VISIBLE
 
@@ -277,7 +284,6 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    // ---------------- CATEGORY ----------------
     private fun loadCategories() {
         binding.progressBarCategory.visibility = View.VISIBLE
 
@@ -321,7 +327,7 @@ class MainActivity : AppCompatActivity() {
 
         database.child("items")
             .orderByChild("isPopular")
-            .equalTo(1.0) // 🔥 MUST BE DOUBLE
+            .equalTo(1.0) 
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -330,7 +336,6 @@ class MainActivity : AppCompatActivity() {
                     for (child in snapshot.children) {
                         child.getValue(ItemModel::class.java)?.let {
                             list.add(it)
-                            // Add to global list for search if not already there
                             if (!allItemsList.contains(it)) allItemsList.add(it)
                         }
                     }
@@ -363,7 +368,7 @@ class MainActivity : AppCompatActivity() {
 
         database.child("items")
             .orderByChild("isPopular")
-            .equalTo(0.0) // 🔥 MUST BE DOUBLE
+            .equalTo(0.0) 
             .addListenerForSingleValueEvent(object : ValueEventListener {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -372,7 +377,6 @@ class MainActivity : AppCompatActivity() {
                     for (child in snapshot.children) {
                         child.getValue(ItemModel::class.java)?.let {
                             list.add(it)
-                            // Add to global list for search if not already there
                             if (!allItemsList.contains(it)) allItemsList.add(it)
                         }
                     }
@@ -404,23 +408,19 @@ class MainActivity : AppCompatActivity() {
         position: Int
     ) {
         binding.nestedScrollView.postDelayed({
-            // 1. Get the view of the specific item
             val itemView = recyclerView.layoutManager?.findViewByPosition(position)
 
             if (itemView != null) {
                 val rect = android.graphics.Rect()
                 itemView.getDrawingRect(rect)
 
-                // 2. Calculate coordinates relative to the NestedScrollView
                 binding.nestedScrollView.offsetDescendantRectToMyCoords(itemView, rect)
 
-                // 3. Smooth scroll so that specific item is at the top of the screen
                 binding.nestedScrollView.smoothScrollTo(0, rect.top)
             } else {
-                // Fallback: If view isn't ready, scroll to the bottom of the RecyclerView's current visible area
                 binding.nestedScrollView.smoothScrollTo(0, recyclerView.bottom)
             }
-        }, 100) // Small delay to ensure RecyclerView has bound the new items
+        }, 100) 
     }
 
     private fun loadUserData() {
@@ -428,7 +428,6 @@ class MainActivity : AppCompatActivity() {
         if (user != null) {
             val uid = user.uid
 
-            // Reference to users -> uid -> name
             database.child("users").child(uid).child("name")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
@@ -436,7 +435,6 @@ class MainActivity : AppCompatActivity() {
                             val name = snapshot.getValue(String::class.java)
                             binding.textView2.text = name
                         } else {
-                            // Fallback if name isn't set in DB
                             binding.textView2.text = "Coffee Lover"
                         }
                     }

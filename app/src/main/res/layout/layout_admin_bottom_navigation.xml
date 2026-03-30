@@ -130,7 +130,7 @@
                     android:id="@+id/tvCoupons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Coupons"
+                    android:text="Analytics"
                     android:textAlignment="center"
                     android:textColor="@color/darkBrown"
                     android:textSize="11sp"

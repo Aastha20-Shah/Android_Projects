@@ -172,56 +172,6 @@
                             android:focusable="false"
                             android:clickable="false"/>
                     </RelativeLayout>
-
-                    <!-- Expandable Sub-options for Pay Online -->
-                    <LinearLayout
-                        android:id="@+id/onlineSubOptionsLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E0E0E0"/>
-
-                        <RadioGroup
-                            android:id="@+id/nestedPaymentGroup"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="16dp"
-                            android:paddingVertical="8dp">
-
-                            <!-- GPay -->
-                            <RelativeLayout android:id="@+id/gpayLayout" android:layout_width="match_parent" android:layout_height="56dp" android:background="?attr/selectableItemBackground">
-                                <ImageView android:id="@+id/imgGpayNested" android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/img" android:layout_centerVertical="true"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="GPay" android:layout_toEndOf="@id/imgGpayNested" android:layout_marginStart="16dp" android:layout_centerVertical="true" android:textColor="@color/darkBrown"/>
-                                <RadioButton android:id="@+id/gpayOption" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:clickable="false"/>
-                            </RelativeLayout>
-                            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E8E8E8"/>
-
-                            <!-- PhonePe -->
-                            <RelativeLayout android:id="@+id/phonepeLayout" android:layout_width="match_parent" android:layout_height="56dp" android:background="?attr/selectableItemBackground">
-                                <ImageView android:id="@+id/imgPhonepeNested" android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/img_1" android:layout_centerVertical="true"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PhonePe" android:layout_toEndOf="@id/imgPhonepeNested" android:layout_marginStart="16dp" android:layout_centerVertical="true" android:textColor="@color/darkBrown"/>
-                                <RadioButton android:id="@+id/phonepeOption" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:clickable="false"/>
-                            </RelativeLayout>
-                            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E8E8E8"/>
-
-                            <!-- Paytm -->
-                            <RelativeLayout android:id="@+id/paytmLayout" android:layout_width="match_parent" android:layout_height="56dp" android:background="?attr/selectableItemBackground">
-                                <ImageView android:id="@+id/imgPaytmNested" android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/img_2" android:layout_centerVertical="true"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Paytm" android:layout_toEndOf="@id/imgPaytmNested" android:layout_marginStart="16dp" android:layout_centerVertical="true" android:textColor="@color/darkBrown"/>
-                                <RadioButton android:id="@+id/paytmOption" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:clickable="false"/>
-                            </RelativeLayout>
-                            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#E8E8E8"/>
-
-                            <!-- Card -->
-                            <RelativeLayout android:id="@+id/cardLayout" android:layout_width="match_parent" android:layout_height="56dp" android:background="?attr/selectableItemBackground">
-                                <ImageView android:id="@+id/imgCardNested" android:layout_width="28dp" android:layout_height="28dp" android:src="@drawable/img_4" android:layout_centerVertical="true"/>
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Debit / Credit Card" android:layout_toEndOf="@id/imgCardNested" android:layout_marginStart="16dp" android:layout_centerVertical="true" android:textColor="@color/darkBrown"/>
-                                <RadioButton android:id="@+id/cardOption" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentEnd="true" android:layout_centerVertical="true" android:clickable="false"/>
-                            </RelativeLayout>
-                        </RadioGroup>
-                    </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

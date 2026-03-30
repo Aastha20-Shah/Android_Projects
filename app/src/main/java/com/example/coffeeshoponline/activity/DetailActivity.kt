@@ -12,6 +12,9 @@ import com.example.coffeeshoponline.Helper.ManagmentCart
 import com.example.coffeeshoponline.Helper.WishlistManager
 import com.example.coffeeshoponline.databinding.ActivityDetailBinding
 import com.example.coffeeshoponline.model.ItemModel
+import com.google.firebase.auth.FirebaseAuth
+import android.content.Intent
+import androidx.appcompat.app.AlertDialog
 
 class DetailActivity : AppCompatActivity() {
 
@@ -124,11 +127,16 @@ class DetailActivity : AppCompatActivity() {
         }
 
         binding.addToCartBtn.setOnClickListener {
-            cart.insertItems(item)
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                cart.insertItems(item)
+            } else {
+                showLoginRequiredDialog("add items to your cart")
+            }
         }
 
         binding.favBtn.setOnClickListener {
-            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
                 wishlistManager.toggleWishlist(item) { isFav ->
                     if (isFav) {
@@ -138,19 +146,23 @@ class DetailActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-                builder.setTitle("Login Required")
-                builder.setMessage("You must be logged in to add items to your wishlist.")
-                builder.setPositiveButton("Login") { _, _ ->
-                    startActivity(android.content.Intent(this, LoginActivity::class.java))
-                }
-                builder.setNegativeButton("Cancel", null)
-                builder.show()
+                showLoginRequiredDialog("add items to your wishlist")
             }
         }
 
         binding.Backbtn.setOnClickListener {
             finish()
         }
+    }
+
+    private fun showLoginRequiredDialog(action: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Login Required")
+        builder.setMessage("You must be logged in to $action.")
+        builder.setPositiveButton("Login") { _, _ ->
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 }
