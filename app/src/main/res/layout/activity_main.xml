@@ -42,7 +42,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text="Loading..."
+                    android:text="Log in requried"
                     android:textColor="@color/darkBrown"
                     android:textStyle="bold" />
 
