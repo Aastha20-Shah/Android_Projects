@@ -42,7 +42,6 @@ class ThankYouActivity : AppCompatActivity() {
             val intent = Intent(this, UserOrderDetailsActivity::class.java)
             intent.putExtra("order", order)
             startActivity(intent)
-            finish()
         }
     }
 

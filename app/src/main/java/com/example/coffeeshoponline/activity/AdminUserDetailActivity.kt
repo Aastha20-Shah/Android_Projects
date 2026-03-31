@@ -36,7 +36,6 @@ class AdminUserDetailActivity : AppCompatActivity() {
 
         setupUI()
         fetchUserOrders()
-        setupRatingBar()
 
         binding.backBtn.setOnClickListener { finish() }
         
@@ -50,22 +49,6 @@ class AdminUserDetailActivity : AppCompatActivity() {
         binding.userEmailTxt.text = user.email
         binding.userPhoneTxt.text = user.phone
         binding.userAddressTxt.text = formatAddress(user.address)
-        binding.userRatingBar.rating = user.userRating
-    }
-
-    private fun setupRatingBar() {
-        binding.userRatingBar.setOnRatingBarChangeListener { _, rating, fromUser ->
-            if (fromUser) {
-                database.child("users").child(user.id).child("userRating").setValue(rating)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "User evaluation updated", Toast.LENGTH_SHORT).show()
-                        user = user.copy(userRating = rating)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Failed to update evaluation", Toast.LENGTH_SHORT).show()
-                    }
-            }
-        }
     }
 
     private fun formatAddress(address: Any?): String {

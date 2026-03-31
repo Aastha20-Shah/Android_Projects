@@ -1,14 +1,11 @@
 package com.example.coffeeshoponline.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.coffeeshoponline.Adapter.OrderAdapter
-import com.example.coffeeshoponline.R
 import com.example.coffeeshoponline.databinding.ActivityOrderHistoryBinding
 import com.example.coffeeshoponline.model.OrderModel
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +21,13 @@ class OrderHistoryActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.imageView9.setOnClickListener { finish() }
         binding.Backbtn.setOnClickListener { finish() }
+        
+        binding.startShoppingBtn.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            })
+            finish()
+        }
 
         initOrderHistory()
     }
@@ -32,13 +36,11 @@ class OrderHistoryActivity : AppCompatActivity() {
 
         val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
         if (user == null) {
-            // Handle case where user isn't logged in
             return
         }
         val database = FirebaseDatabase.getInstance().getReference("orders")
         binding.orderProgressBar.visibility = View.VISIBLE
 
-        // Use your specific UserID from the database
         val query = database.orderByChild("userId").equalTo(user.uid)
 
         query.addValueEventListener(object : ValueEventListener {
@@ -51,14 +53,20 @@ class OrderHistoryActivity : AppCompatActivity() {
                     }
                 }
 
+                binding.orderProgressBar.visibility = View.GONE
+
                 if (orderList.isNotEmpty()) {
-                    orderList.reverse() // Show newest orders first
+                    binding.emptyLayout.visibility = View.GONE
+                    binding.orderRecyclerView.visibility = View.VISIBLE
+                    orderList.reverse() 
                     binding.orderRecyclerView.apply {
                         layoutManager = LinearLayoutManager(this@OrderHistoryActivity)
                         adapter = OrderAdapter(orderList)
                     }
+                } else {
+                    binding.emptyLayout.visibility = View.VISIBLE
+                    binding.orderRecyclerView.visibility = View.GONE
                 }
-                binding.orderProgressBar.visibility = View.GONE
             }
 
             override fun onCancelled(error: DatabaseError) {

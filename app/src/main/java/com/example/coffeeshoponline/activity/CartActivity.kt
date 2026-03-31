@@ -52,6 +52,20 @@ class CartActivity : AppCompatActivity() {
         validateCartItems()
         initCart()
         calculateCart()
+
+        val coupons = arrayOf("FIRST50", "SAVE20", "COFFEE100")
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, coupons)
+        binding.editTextText2.setAdapter(adapter)
+
+        binding.editTextText2.setOnClickListener {
+            binding.editTextText2.showDropDown()
+        }
+
+        binding.editTextText2.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                binding.editTextText2.showDropDown()
+            }
+        }
         
         binding.button2.setOnClickListener {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

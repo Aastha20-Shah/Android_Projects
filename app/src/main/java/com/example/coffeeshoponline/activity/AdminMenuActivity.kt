@@ -163,21 +163,24 @@ class AdminMenuActivity : AppCompatActivity() {
 
             val id = item?.id ?: ((itemList.maxOfOrNull { it.id } ?: 0) + 1)
             
-            val newItem = ItemModel(
-                id = id,
-                title = title,
-                description = desc,
-                extra = extra,
-                picUrl = pics,
-                priceSmall = pS,
-                priceMedium = pM,
-                priceLarge = pL,
-                rating = rating,
-                isPopular = isPop, 
-                categoryId = catId
+            val itemData = hashMapOf<String, Any>(
+                "id" to id,
+                "title" to title,
+                "description" to desc,
+                "extra" to extra,
+                "picUrl" to pics,
+                "priceSmall" to pS,
+                "priceMedium" to pM,
+                "priceLarge" to pL,
+                "rating" to rating,
+                "isPopular" to isPop, 
+                "categoryId" to catId,
+                "selectedSize" to (item?.selectedSize ?: "SMALL"),
+                "numberInCart" to (item?.numberInCart ?: 1),
+                "isFavorite" to (item?.isFavorite ?: false)
             )
 
-            database.child("items").child(id.toString()).setValue(newItem)
+            database.child("items").child(id.toString()).setValue(itemData)
                 .addOnSuccessListener {
                     Toast.makeText(this, "Product saved", Toast.LENGTH_SHORT).show()
                     dialog.dismiss()

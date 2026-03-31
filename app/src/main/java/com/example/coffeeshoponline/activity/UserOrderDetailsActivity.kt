@@ -1,5 +1,6 @@
 package com.example.coffeeshoponline.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +30,7 @@ class UserOrderDetailsActivity : AppCompatActivity() {
         }
 
         if (order == null) {
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
             return
         }
@@ -37,7 +39,9 @@ class UserOrderDetailsActivity : AppCompatActivity() {
         setupItemsList()
         setupRating()
         
-        binding.backBtn.setOnClickListener { finish() }
+        binding.backBtn.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupDetails() {

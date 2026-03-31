@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +31,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var moreAdapter: ItemAdapter
 
     private var allItemsList = mutableListOf<ItemModel>()
+    private val suggestionsList = mutableListOf<String>()
+    private lateinit var suggestionsAdapter: ArrayAdapter<String>
 
     private var isPopularExpanded = false
     private var isMoreExpanded = false
@@ -223,6 +227,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupSearch() {
+        suggestionsAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, suggestionsList)
+        (binding.editTextText as? AutoCompleteTextView)?.apply {
+            setAdapter(suggestionsAdapter)
+            threshold = 2
+            setOnItemClickListener { parent, view, position, id ->
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                filterItems(selectedItem.lowercase(Locale.ROOT))
+            }
+        }
+
         binding.editTextText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -241,6 +255,8 @@ class MainActivity : AppCompatActivity() {
             binding.textView3.visibility = View.VISIBLE
             binding.categoryView.visibility = View.VISIBLE
             binding.recyclerViewPopular.visibility = View.VISIBLE
+            binding.textViewPopular.visibility = View.VISIBLE
+            binding.seeAllPopular.visibility = View.VISIBLE
             binding.seeAllMore.parent.let { (it as View).visibility = View.VISIBLE }
 
             loadMoreCoffee() 
@@ -249,6 +265,8 @@ class MainActivity : AppCompatActivity() {
             binding.textView3.visibility = View.GONE
             binding.categoryView.visibility = View.GONE
             binding.recyclerViewPopular.visibility = View.GONE
+            binding.textViewPopular.visibility = View.GONE
+            binding.seeAllPopular.visibility = View.GONE
 
             val filteredList = allItemsList.filter {
                 it.title?.lowercase(Locale.ROOT)?.contains(query) == true ||
@@ -336,9 +354,17 @@ class MainActivity : AppCompatActivity() {
                     for (child in snapshot.children) {
                         child.getValue(ItemModel::class.java)?.let {
                             list.add(it)
-                            if (!allItemsList.contains(it)) allItemsList.add(it)
+                            if (!allItemsList.any { item -> item.id == it.id }) {
+                                allItemsList.add(it)
+                                it.title?.let { title -> 
+                                    if (!suggestionsList.contains(title)) {
+                                        suggestionsList.add(title)
+                                    }
+                                }
+                            }
                         }
                     }
+                    suggestionsAdapter.notifyDataSetChanged()
 
                     val displayList =
                         if (isPopularExpanded) list else list.take(6)
@@ -377,9 +403,17 @@ class MainActivity : AppCompatActivity() {
                     for (child in snapshot.children) {
                         child.getValue(ItemModel::class.java)?.let {
                             list.add(it)
-                            if (!allItemsList.contains(it)) allItemsList.add(it)
+                            if (!allItemsList.any { item -> item.id == it.id }) {
+                                allItemsList.add(it)
+                                it.title?.let { title -> 
+                                    if (!suggestionsList.contains(title)) {
+                                        suggestionsList.add(title)
+                                    }
+                                }
+                            }
                         }
                     }
+                    suggestionsAdapter.notifyDataSetChanged()
 
                     val displayList =
                         if (isMoreExpanded) list else list.take(10)
@@ -443,6 +477,27 @@ class MainActivity : AppCompatActivity() {
                         binding.textView2.text = "Welcome!"
                     }
                 })
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateCartBadge()
+    }
+
+    private fun updateCartBadge() {
+        val cartHelper = com.example.coffeeshoponline.Helper.ManagmentCart(this)
+        val cartList = cartHelper.getListCart()
+        val count = cartList.sumOf { it.numberInCart }
+        
+        val badge = findViewById<android.widget.TextView>(com.example.coffeeshoponline.R.id.cartBadge)
+        if (badge != null) {
+            if (count > 0) {
+                badge.visibility = android.view.View.VISIBLE
+                badge.text = count.toString()
+            } else {
+                badge.visibility = android.view.View.GONE
+            }
         }
     }
 }

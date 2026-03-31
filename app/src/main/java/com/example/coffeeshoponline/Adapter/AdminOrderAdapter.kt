@@ -3,6 +3,7 @@ package com.example.coffeeshoponline.Adapter
 import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.coffeeshoponline.activity.AdminOrderDetailsActivity
@@ -39,6 +40,14 @@ class AdminOrderAdapter(
             holder.binding.tvAdminOrderStatus.setTextColor(Color.parseColor("#388E3C")) // Green
         } else {
             holder.binding.tvAdminOrderStatus.setTextColor(Color.parseColor("#E65100")) // Orange
+        }
+
+        // Show rating if available
+        if (order.rating > 0) {
+            holder.binding.adminOrderRatingBar.visibility = View.VISIBLE
+            holder.binding.adminOrderRatingBar.rating = order.rating
+        } else {
+            holder.binding.adminOrderRatingBar.visibility = View.GONE
         }
 
         // Click on item to see details
