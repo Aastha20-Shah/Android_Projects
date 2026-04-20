@@ -388,6 +388,7 @@ class CartActivity : AppCompatActivity() {
             intent.putExtra("delivery", delivery)
             intent.putExtra("tax", tax)
             intent.putExtra("total", "₹%.2f".format(total))
+            intent.putExtra("appliedCouponCode", appliedCouponCode)
 
             startActivity(intent)
         }

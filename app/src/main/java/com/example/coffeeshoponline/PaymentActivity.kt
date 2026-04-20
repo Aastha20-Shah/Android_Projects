@@ -35,6 +35,7 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
     private var delivery: Double = 0.0
     private var tax: Double = 0.0
     private var totalAmount: Double = 0.0
+    private var appliedCouponCode: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
     private var currentIconIndex = 0
@@ -79,6 +80,7 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
 
         userName = intent.getStringExtra("userName")
         address = intent.getStringExtra("address")
+        appliedCouponCode = intent.getStringExtra("appliedCouponCode")
         
         calculatePrices()
 
@@ -210,6 +212,15 @@ class PaymentActivity : AppCompatActivity(), PaymentResultListener {
         )
 
         orderRef.setValue(orderModel).addOnSuccessListener {
+            if (appliedCouponCode == "FIRST50") {
+                FirebaseDatabase.getInstance("https://coffeeshoponline-cc40a-default-rtdb.firebaseio.com/")
+                    .reference
+                    .child("users")
+                    .child(uid)
+                    .child("firstOrder")
+                    .setValue(false)
+            }
+            
             managementCart.clearCart()
             val intent = Intent(this, ThankYouActivity::class.java)
             intent.putExtra("order", orderModel)
