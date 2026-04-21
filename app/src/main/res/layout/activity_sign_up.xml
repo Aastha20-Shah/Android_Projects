@@ -151,8 +151,7 @@
                 android:layout_marginTop="12dp"
                 android:text="I agree to the Terms and Privacy Policy"
                 android:textColor="@color/brown"
-                android:textSize="13sp"
-                android:buttonTint="@color/brown"/>
+                android:textSize="13sp" />
 
         </LinearLayout>
 
